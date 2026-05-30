@@ -1,0 +1,56 @@
+# users.tf
+# ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+# HUMAN USERS — Who are the engineers?
+#
+# To onboard:  Add a user block, open PR, merge, set password.
+# To offboard: Remove the user block, open PR, merge. Done.
+# To change access: Move them to a different role.
+#
+# Users NEVER reference servers directly. They get roles.
+# Roles define what servers they can access (see roles.tf).
+# ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+locals {
+  users = {
+
+    # ── Platform Team (full lab access) ──────
+    "tom" = {
+      roles = ["platform-admin"]
+      email = "tom@lab.internal"
+    }
+    "harry" = {
+      roles = ["platform-admin"]
+      email = "harry@lab.internal"
+    }
+    "sally" = {
+      roles = ["platform-admin"]
+      email = "sally@lab.internal"
+    }
+    "fawaz" = {
+      roles = ["platform-admin"]
+      email = "fawaz@lab.internal"
+    }
+    "desmond" = {
+      roles = ["platform-admin"]
+      email = "desmond@lab.internal"
+    }
+
+    # ── K8s Team (cluster access only) ───────
+    "rich" = {
+      roles = ["k8s-operator"]
+      email = "rich@lab.internal"
+    }
+    "vishal" = {
+      roles = ["k8s-operator"]
+      email = "vishal@lab.internal"
+    }
+
+    # ── Multi-role example ───────────────────
+    # A user can have multiple roles. Policies are merged.
+    # "jane" = {
+    #   roles = ["k8s-operator", "deployer"]
+    #   email = "jane@lab.internal"
+    # }
+
+  }
+}
