@@ -14,25 +14,17 @@ locals {
   users = {
 
     # ── Platform Team (full lab access) ──────
-    "tom" = {
+    "ej" = {
       roles = ["platform-admin"]
-      email = "tom@lab.internal"
-    }
-    "harry" = {
-      roles = ["platform-admin"]
-      email = "harry@lab.internal"
-    }
-    "sally" = {
-      roles = ["platform-admin"]
-      email = "sally@lab.internal"
+      email = "ejbest@gmail.com"
     }
     "fawaz" = {
       roles = ["platform-admin"]
-      email = "fawaz@lab.internal"
+      email = "fawazadewale120@gmail.com"
     }
     "desmond" = {
       roles = ["platform-admin"]
-      email = "desmond@lab.internal"
+      email = "muyukhadesmond018@gmail.com"
     }
 
     # ── K8s Team (cluster access only) ───────

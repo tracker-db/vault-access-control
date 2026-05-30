@@ -20,9 +20,9 @@ locals {
     }
 
     # ── CI/CD Pipeline ───────────────────────
-    "ci-runner" = {
+    "app-service" = {
       roles       = ["deployer"]
-      description = "GitHub Actions self-hosted runner on build server"
+      description = "app service account formally EJ's shared account"
       # Short TTL — pipelines should be fast
       token_ttl     = "30m"
       token_max_ttl = "1h"
