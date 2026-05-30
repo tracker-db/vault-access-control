@@ -12,6 +12,13 @@
 locals {
   service_accounts = {
 
+    "github-actions-runner" = {
+      roles       = ["deployer"]
+      description = "GitHub Actions self-hosted runner on build server"
+      token_ttl     = "30m"
+      token_max_ttl = "1h"
+    }
+
     # ── CI/CD Pipeline ───────────────────────
     "ci-runner" = {
       roles       = ["deployer"]

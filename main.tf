@@ -155,8 +155,8 @@ output "service_account_matrix" {
   value = {
     for sa_name, policies in local.sa_policies :
     sa_name => {
-      roles    = local.service_accounts[sa_name].roles
-      policies = policies
+      roles       = local.service_accounts[sa_name].roles
+      policies    = policies
       description = local.service_accounts[sa_name].description
     }
   }
