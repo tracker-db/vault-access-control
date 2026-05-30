@@ -2,130 +2,122 @@
 # ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 # ROLE DEFINITIONS — What does each role grant?
 #
-# Roles define ACCESS BOUNDARIES. Users and service accounts
-# are assigned roles — they never reference resources directly.
-#
-# To add a new server to an existing role: update the grants here.
-# To create a new access tier: add a new role here.
+# Three types of grants:
+#   ssh     → Vault SSH CA cert signing for target hosts
+#   vault   → Vault admin/operator access (policies, secrets engines, auth)
+#   secret  → Read access to KV secrets (passwords, tokens, keys)
 # ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
 locals {
   roles = {
 
     # ──────────────────────────────────────────
-    # Platform Admin — full root to everything
+    # Platform Admin — the top engineers
+    #
+    # Gets: Vault admin, bastion SSH, AnyDesk creds,
+    #        app-service creds (to hop into internal systems)
     # ──────────────────────────────────────────
     "platform-admin" = {
-      description = "Full admin access to all lab infrastructure"
+      description = "Full lab access — Vault admin, bastion SSH, AnyDesk, app-service"
+
       grants = {
-        "utility-servers" = {
+        "bastion" = {
+          type    = "ssh"
           targets = [
-            "vm-1.lab.internal",
-            "vm-2.lab.internal",
-            "vm-3.lab.internal",
+            "ssh.auto-deploy.net:1020",
+            "ssh.auto-deploy.net:1022",
           ]
           access  = "admin"
           ttl     = "8h"
           max_ttl = "24h"
         }
-        "bastion" = {
-          targets = ["bastion.lab.internal"]
-          access  = "admin"
-          ttl     = "4h"
-          max_ttl = "8h"
-        }
-        "build-server" = {
-          targets = ["build.lab.internal"]
-          access  = "admin"
-          ttl     = "8h"
-          max_ttl = "24h"
-        }
       }
+
+      # Vault admin — manage policies, secrets engines, auth methods
+      vault_admin = true
+
+      # KV secrets this role can READ
+      secret_paths = [
+        "secret/data/shared/anydesk/*",
+        "secret/data/shared/app-service/*",
+        "secret/data/apps/*",
+      ]
     }
 
     # ──────────────────────────────────────────
-    # K8s Operator — access to cluster nodes
+    # K8s Operator — cluster node access only
     # ──────────────────────────────────────────
     "k8s-operator" = {
-      description = "Read access to Kubernetes cluster nodes"
+      description = "Read access to K8s cluster nodes via bastion"
+
       grants = {
-        "k8s-blue" = {
-          targets = [
-            "k8s-blue-node1.lab.internal",
-            "k8s-blue-node2.lab.internal",
-            "k8s-blue-node3.lab.internal",
-          ]
-          access  = "read"
-          ttl     = "4h"
-          max_ttl = "8h"
-        }
-        "k8s-green" = {
-          targets = [
-            "k8s-green-node1.lab.internal",
-            "k8s-green-node2.lab.internal",
-            "k8s-green-node3.lab.internal",
-          ]
-          access  = "read"
-          ttl     = "4h"
-          max_ttl = "8h"
-        }
         "bastion" = {
-          targets = ["bastion.lab.internal"]
+          type    = "ssh"
+          targets = [
+            "ssh.auto-deploy.net:1020",
+            "ssh.auto-deploy.net:1022",
+          ]
           access  = "read"
           ttl     = "4h"
           max_ttl = "8h"
         }
       }
+
+      vault_admin = false
+
+      secret_paths = [
+        "secret/data/shared/app-service/*",
+      ]
     }
 
     # ──────────────────────────────────────────
-    # Deployer — CI/CD pipelines, build server
+    # Deployer — CI/CD pipelines, automation
     # ──────────────────────────────────────────
     "deployer" = {
-      description = "Deploy access for CI/CD and automation"
+      description = "Deploy access for CI/CD automation"
+
       grants = {
-        "build-server" = {
-          targets = ["build.lab.internal"]
+        "bastion" = {
+          type    = "ssh"
+          targets = [
+            "ssh.auto-deploy.net:1020",
+            "ssh.auto-deploy.net:1022",
+          ]
           access  = "read"
           ttl     = "2h"
           max_ttl = "4h"
         }
-        "utility-servers" = {
-          targets = [
-            "vm-1.lab.internal",
-            "vm-2.lab.internal",
-            "vm-3.lab.internal",
-          ]
-          access  = "read"
-          ttl     = "1h"
-          max_ttl = "2h"
-        }
       }
+
+      vault_admin = false
+
+      secret_paths = [
+        "secret/data/shared/app-service/*",
+      ]
     }
 
     # ──────────────────────────────────────────
     # Read-Only — monitoring, auditing
     # ──────────────────────────────────────────
     "read-only" = {
-      description = "Read-only access for monitoring and audit"
+      description = "Read-only for monitoring and audit"
+
       grants = {
-        "utility-servers" = {
+        "bastion" = {
+          type    = "ssh"
           targets = [
-            "vm-1.lab.internal",
-            "vm-2.lab.internal",
-            "vm-3.lab.internal",
+            "ssh.auto-deploy.net:1020",
+            "ssh.auto-deploy.net:1022",
           ]
           access  = "read"
           ttl     = "2h"
           max_ttl = "4h"
         }
-        "bastion" = {
-          targets = ["bastion.lab.internal"]
-          access  = "read"
-          ttl     = "2h"
-          max_ttl = "4h"
-        }
       }
+
+      vault_admin = false
+
+      secret_paths = []
     }
 
   }
