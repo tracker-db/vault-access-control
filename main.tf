@@ -1,11 +1,7 @@
 # main.tf
 # ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-# WIRING — Connects roles.tf + users.tf + service-accounts.tf
-#
-# You should NOT need to edit this file for routine access changes.
-# Edit users.tf to add/remove people.
-# Edit roles.tf to change what roles can access.
-# Edit service-accounts.tf to add/remove automation identities.
+# THIS REPO IS THE SINGLE SOURCE OF TRUTH FOR VAULT.
+# If it's not in Terraform, it doesn't exist in Vault.
 # ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
 terraform {
@@ -40,54 +36,189 @@ variable "ssh_mount_path" {
 }
 
 # ──────────────────────────────────────────────
-# Module: Create Vault SSH roles + policies from roles.tf
+# Module: SSH CA roles + per-role policies
 # ──────────────────────────────────────────────
 
 module "vault_rbac" {
-  source = "git::https://github.com/tracker-db/modules-terraform-vault-rbac.git?ref=v1.0.0"
+  source = "git::https://github.com/tracker-db/modules-terraform-vault-rbac.git?ref=v2.0.0"
 
   roles          = local.roles
   ssh_mount_path = var.ssh_mount_path
 }
 
 # ──────────────────────────────────────────────
-# Auth Backend: Userpass (for humans)
+# Vault Admin Policy — for platform-admin role
+# ──────────────────────────────────────────────
+
+resource "vault_policy" "vault_admin" {
+  name = "vault-admin"
+
+  policy = <<-EOT
+    # Full Vault administration
+    # Manage policies
+    path "sys/policies/*" {
+      capabilities = ["create", "read", "update", "delete", "list"]
+    }
+    path "sys/policy/*" {
+      capabilities = ["create", "read", "update", "delete", "list"]
+    }
+
+    # Manage auth methods
+    path "sys/auth/*" {
+      capabilities = ["create", "read", "update", "delete", "list", "sudo"]
+    }
+    path "auth/*" {
+      capabilities = ["create", "read", "update", "delete", "list"]
+    }
+
+    # Manage secrets engines
+    path "sys/mounts/*" {
+      capabilities = ["create", "read", "update", "delete", "list"]
+    }
+    path "sys/mounts" {
+      capabilities = ["read", "list"]
+    }
+
+    # Manage audit backends
+    path "sys/audit/*" {
+      capabilities = ["create", "read", "update", "delete", "list", "sudo"]
+    }
+    path "sys/audit" {
+      capabilities = ["read", "list"]
+    }
+
+    # Vault health and status
+    path "sys/health" {
+      capabilities = ["read"]
+    }
+    path "sys/seal-status" {
+      capabilities = ["read"]
+    }
+    path "sys/leader" {
+      capabilities = ["read"]
+    }
+    path "sys/storage/raft/autopilot/state" {
+      capabilities = ["read"]
+    }
+
+    # Read Vault configuration
+    path "sys/config/*" {
+      capabilities = ["read", "list"]
+    }
+
+    # Token management
+    path "auth/token/*" {
+      capabilities = ["create", "read", "update", "delete", "list"]
+    }
+
+    # SSH CA management
+    path "${var.ssh_mount_path}/*" {
+      capabilities = ["create", "read", "update", "delete", "list"]
+    }
+  EOT
+}
+
+# ──────────────────────────────────────────────
+# KV Secret Read Policies — per role
+# ──────────────────────────────────────────────
+
+resource "vault_policy" "kv_read" {
+  for_each = {
+    for role_name, role in local.roles :
+    role_name => role.secret_paths
+    if length(role.secret_paths) > 0
+  }
+
+  name = "kv-read-${each.key}"
+
+  policy = join("\n\n", [
+    for path in each.value :
+    <<-EOT
+    path "${path}" {
+      capabilities = ["read", "list"]
+    }
+    EOT
+  ])
+}
+
+# Platform-admins also get KV write (they manage secrets)
+resource "vault_policy" "kv_admin" {
+  name = "kv-admin"
+
+  policy = <<-EOT
+    # Full KV v2 management
+    path "secret/*" {
+      capabilities = ["create", "read", "update", "delete", "list"]
+    }
+    path "secret/metadata/*" {
+      capabilities = ["read", "list", "delete"]
+    }
+    path "secret/data/*" {
+      capabilities = ["create", "read", "update", "delete"]
+    }
+  EOT
+}
+
+# ──────────────────────────────────────────────
+# Auth Backends
 # ──────────────────────────────────────────────
 
 resource "vault_auth_backend" "userpass" {
   type = "userpass"
-
-  lifecycle {
-    prevent_destroy = true
-  }
+  lifecycle { prevent_destroy = true }
 }
-
-# ──────────────────────────────────────────────
-# Auth Backend: AppRole (for service accounts)
-# ──────────────────────────────────────────────
 
 resource "vault_auth_backend" "approle" {
   type = "approle"
-
-  lifecycle {
-    prevent_destroy = true
-  }
+  lifecycle { prevent_destroy = true }
 }
 
 # ──────────────────────────────────────────────
-# Human Users — resolve roles → policies, create userpass
+# User Policy Aggregation
+#
+# For each user, collect ALL policies from their roles:
+#   - SSH CA policies (from module)
+#   - vault-admin policy (if role.vault_admin = true)
+#   - KV read policy (if role.secret_paths not empty)
+#   - KV admin policy (if role.vault_admin = true)
 # ──────────────────────────────────────────────
 
 locals {
-  # For each user, collect all policy names from their assigned roles
-  # Example: tom has roles=["platform-admin"]
-  #   → policies = ["ssh-role-platform-admin"]
   user_policies = {
-    for username, user in local.users : username => distinct(flatten([
-      for role_name in user.roles : module.vault_rbac.role_policy_names[role_name]
-    ]))
+    for username, user in local.users : username => distinct(flatten(concat(
+      # SSH CA policies from the RBAC module
+      [for role_name in user.roles : module.vault_rbac.role_policy_names[role_name]],
+
+      # vault-admin policy
+      [for role_name in user.roles :
+        local.roles[role_name].vault_admin ? "vault-admin" : ""
+      ],
+
+      # KV admin policy (platform-admins can write secrets)
+      [for role_name in user.roles :
+        local.roles[role_name].vault_admin ? "kv-admin" : ""
+      ],
+
+      # KV read policies
+      [for role_name in user.roles :
+        length(local.roles[role_name].secret_paths) > 0 ? "kv-read-${role_name}" : ""
+      ],
+    )))
+  }
+
+  sa_policies = {
+    for sa_name, sa in local.service_accounts : sa_name => distinct(flatten(concat(
+      [for role_name in sa.roles : module.vault_rbac.role_policy_names[role_name]],
+      [for role_name in sa.roles :
+        length(local.roles[role_name].secret_paths) > 0 ? "kv-read-${role_name}" : ""
+      ],
+    )))
   }
 }
+
+# ──────────────────────────────────────────────
+# Human Users — userpass accounts
+# ──────────────────────────────────────────────
 
 resource "vault_generic_endpoint" "users" {
   for_each = local.users
@@ -99,23 +230,15 @@ resource "vault_generic_endpoint" "users" {
   disable_delete       = false
 
   data_json = jsonencode({
-    token_policies = local.user_policies[each.key]
+    token_policies = [for p in local.user_policies[each.key] : p if p != ""]
     token_ttl      = "8h"
     token_max_ttl  = "24h"
   })
 }
 
 # ──────────────────────────────────────────────
-# Service Accounts — resolve roles → policies, create AppRole
+# Service Accounts — AppRole
 # ──────────────────────────────────────────────
-
-locals {
-  sa_policies = {
-    for sa_name, sa in local.service_accounts : sa_name => distinct(flatten([
-      for role_name in sa.roles : module.vault_rbac.role_policy_names[role_name]
-    ]))
-  }
-}
 
 resource "vault_approle_auth_backend_role" "service_accounts" {
   for_each = local.service_accounts
@@ -124,15 +247,9 @@ resource "vault_approle_auth_backend_role" "service_accounts" {
   backend    = vault_auth_backend.approle.path
   role_name  = each.key
 
-  token_policies = local.sa_policies[each.key]
+  token_policies = [for p in local.sa_policies[each.key] : p if p != ""]
   token_ttl      = try(each.value.token_ttl, "1h")
   token_max_ttl  = try(each.value.token_max_ttl, "2h")
-
-  # Bind to specific CIDR if you want to lock SAs to specific hosts
-  # secret_id_bound_cidrs = ["10.0.10.0/24"]
-
-  # secret_id must be generated out-of-band:
-  #   vault write -f auth/approle/role/<name>/secret-id
 }
 
 # ──────────────────────────────────────────────
@@ -145,7 +262,7 @@ output "user_access_matrix" {
     for username, policies in local.user_policies :
     username => {
       roles    = local.users[username].roles
-      policies = policies
+      policies = [for p in policies if p != "" : p]
     }
   }
 }
@@ -156,13 +273,8 @@ output "service_account_matrix" {
     for sa_name, policies in local.sa_policies :
     sa_name => {
       roles       = local.service_accounts[sa_name].roles
-      policies    = policies
+      policies    = [for p in policies if p != "" : p]
       description = local.service_accounts[sa_name].description
     }
   }
-}
-
-output "role_resource_map" {
-  description = "What resources each role grants access to"
-  value       = module.vault_rbac.role_resource_map
 }
