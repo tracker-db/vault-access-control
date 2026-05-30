@@ -10,7 +10,8 @@ override.tf.json
 *_override.tf
 *_override.tf.json
 
-# Secrets — NEVER commit these
+# SECRETS — NEVER COMMIT
+secrets.auto.tfvars
 *.pem
 *.key
 vault-token
