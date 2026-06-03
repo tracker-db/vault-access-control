@@ -26,9 +26,10 @@ locals {
   users = {
 
     "ej" = {
-      roles  = ["platform-admin"]
-      email  = "ej@lab.internal"
-      status = "enabled"
+      roles          = ["platform-admin"]
+      email          = "ej@lab.internal"
+      status         = "enabled"
+      extra_policies = ["root-equivalent"]
     }
     "ejbest" = {
       roles  = ["platform-admin"]
