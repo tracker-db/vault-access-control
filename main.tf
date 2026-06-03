@@ -35,11 +35,6 @@ variable "ssh_mount_path" {
   default     = "ssh"
 }
 
-variable "initial_user_password" {
-  description = "Temporary initial password for all new userpass accounts. Users must change on first login."
-  type        = string
-  sensitive   = true
-}
 
 # ──────────────────────────────────────────────
 # Module: SSH CA roles + per-role policies
@@ -232,14 +227,13 @@ resource "vault_generic_endpoint" "users" {
   depends_on           = [vault_auth_backend.userpass]
   path                 = "auth/userpass/users/${each.key}"
   ignore_absent_fields = true
-  disable_read         = true
+  disable_read         = false
   disable_delete       = false
 
   data_json = jsonencode({
     token_policies = [for p in local.user_policies[each.key] : p if p != ""]
-    token_ttl      = "8h"
-    token_max_ttl  = "24h"
-    password       = var.initial_user_password
+    token_ttl      = 28800
+    token_max_ttl  = 86400
   })
 }
 

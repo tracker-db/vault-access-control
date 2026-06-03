@@ -44,34 +44,23 @@ Add service accounts and vault-admin role:
 
 ---
 
-## Task 3 — OPEN DISCUSSION: terraform plan noise (mandatory)
+## Task 3 — RESOLVED: terraform plan noise
 
-`terraform plan` always shows 7 user accounts as "to change."
-This is the `vault_generic_endpoint` write-only pattern (`disable_read = true`).
-Applying is safe and idempotent — but the noise **masks real drift** and
-breaks the ability to use plan as a reliable CI/CD gate.
+**Plan is now clean: `No changes. Your infrastructure matches the configuration.`**
 
-### Root cause
-Vault userpass does not return the password on read. Terraform sees
-config (has password) vs. state (no password) and always flags a diff.
+### What was causing the noise
+Two separate issues, both fixed:
+1. `password` included in `data_json` — Vault never returns it on read,
+   so Terraform always saw a diff. Fix: removed password from config.
+   Initial passwords set once manually: `vault write auth/userpass/users/<name> password=X`
+2. TTL format mismatch — config sent `"8h"` (string) but Vault returns
+   `28800` (number/seconds). Fix: config now sends seconds (`28800`, `86400`).
 
-### Fix options to discuss
-1. Remove `password` from `data_json` — manage initial passwords manually
-   via `vault write auth/userpass/users/<name> password=X`. Terraform
-   only manages policies and TTLs. One-time bootstrap step per user.
-2. Use Vault Identity (entities + groups) for policy assignment.
-   Userpass becomes auth only; policies attach to the identity entity,
-   not the userpass account. Fully idempotent.
-3. Separate bootstrap apply (targeted, one-time) from day-to-day apply.
-
-### Pre-existing resources — import decision
+### Pre-existing resources — import decision (still open)
 Pre-existing userpass accounts (ej, bob, mac, air, richard, etc.) and
 AppRole roles (ansible-approle, jenkins, terraform) exist in Vault outside
-Terraform state.
+Terraform state. Now that plan is clean, imports will give trustworthy signal.
 
-- **Userpass accounts**: do NOT import until plan-noise is resolved.
-  Importing now would immediately overwrite passwords on every apply.
-- **AppRole roles**: can be imported cleanly (no password issue).
-  Decision needed: which roles does this project own vs. other tooling?
-
-Rule: fix plan-noise first, then import gives a trustworthy signal.
+- **Userpass accounts**: add to `users.tf`, then `terraform import`
+  (no password set by Terraform — users keep existing passwords)
+- **AppRole roles**: decision needed on which roles this project owns
