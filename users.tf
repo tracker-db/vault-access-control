@@ -73,10 +73,14 @@ locals {
       email = "ej@lab.internal"
     }
 
-    # Previously had: nandhapo (custom policy) — read-only pending role review
+    # nandha previously had a custom per-person policy (nandhapo) that grants
+    # access to paths not yet covered by any standard role. Both are kept here
+    # until nandhapo is either mapped to a role or retired. When that work is
+    # done: remove extra_policies and move nandha to the correct role.
     "nandha" = {
-      roles = ["read-only"]
-      email = "nandha@lab.internal"
+      roles          = ["read-only"]
+      email          = "nandha@lab.internal"
+      extra_policies = ["nandhapo"]
     }
 
     # Previously had: jenkins policy (decommissioned) — reset to read-only
