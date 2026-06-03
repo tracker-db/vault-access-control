@@ -204,6 +204,10 @@ locals {
       [for role_name in user.roles :
         length(local.roles[role_name].secret_paths) > 0 ? "kv-read-${role_name}" : ""
       ],
+
+      # Extra policies — for pre-existing custom policies not yet mapped to a role.
+      # Use sparingly. The goal is to migrate these into proper roles over time.
+      try(user.extra_policies, []),
     )))
   }
 
