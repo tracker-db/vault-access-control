@@ -32,15 +32,16 @@ variable "vault_addr" {
 variable "ssh_mount_path" {
   description = "Vault SSH secrets engine mount path"
   type        = string
-  default     = "ssh-client-signer"
+  default     = "ssh"
 }
+
 
 # ──────────────────────────────────────────────
 # Module: SSH CA roles + per-role policies
 # ──────────────────────────────────────────────
 
 module "vault_rbac" {
-  source = "git::https://github.com/tracker-db/modules-terraform-vault-rbac.git?ref=v2.0.0"
+  source = "git::https://github.com/tracker-db/modules-terraform-vault-rbac.git//modules/vault-rbac?ref=9656cb888be83a2cd577af4318c2ccec30fc2600"
 
   roles          = local.roles
   ssh_mount_path = var.ssh_mount_path
@@ -231,8 +232,8 @@ resource "vault_generic_endpoint" "users" {
 
   data_json = jsonencode({
     token_policies = [for p in local.user_policies[each.key] : p if p != ""]
-    token_ttl      = "8h"
-    token_max_ttl  = "24h"
+    token_ttl      = 28800
+    token_max_ttl  = 86400
   })
 }
 
@@ -248,8 +249,8 @@ resource "vault_approle_auth_backend_role" "service_accounts" {
   role_name  = each.key
 
   token_policies = [for p in local.sa_policies[each.key] : p if p != ""]
-  token_ttl      = try(each.value.token_ttl, "1h")
-  token_max_ttl  = try(each.value.token_max_ttl, "2h")
+  token_ttl      = try(each.value.token_ttl, 3600)
+  token_max_ttl  = try(each.value.token_max_ttl, 7200)
 }
 
 # ──────────────────────────────────────────────
@@ -262,7 +263,7 @@ output "user_access_matrix" {
     for username, policies in local.user_policies :
     username => {
       roles    = local.users[username].roles
-      policies = [for p in policies if p != "" : p]
+      policies = [for p in policies : p if p != ""]
     }
   }
 }
@@ -273,7 +274,7 @@ output "service_account_matrix" {
     for sa_name, policies in local.sa_policies :
     sa_name => {
       roles       = local.service_accounts[sa_name].roles
-      policies    = [for p in policies if p != "" : p]
+      policies    = [for p in policies : p if p != ""]
       description = local.service_accounts[sa_name].description
     }
   }
