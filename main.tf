@@ -41,7 +41,7 @@ variable "ssh_mount_path" {
 # ──────────────────────────────────────────────
 
 module "vault_rbac" {
-  source = "git::https://github.com/tracker-db/modules-terraform-vault-rbac.git//modules/vault-rbac?ref=9656cb888be83a2cd577af4318c2ccec30fc2600"
+  source = "git::https://github.com/tracker-db/modules-terraform-vault-rbac.git//modules/vault-rbac?ref=ca4f089f3578f31c57571a8878a2b541d45e04d4"
 
   roles          = local.roles
   ssh_mount_path = var.ssh_mount_path
