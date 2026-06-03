@@ -67,7 +67,14 @@ resource "vault_mount" "transit" {
 }
 
 # ── SSH Engines ──────────────────────────────────────────
-# ssh/ is managed by the vault-rbac module via main.tf
+# ssh/ is the SSH CA engine used by the vault-rbac module.
+# The mount is declared here; the CA roles live in the module.
+resource "vault_mount" "ssh_ca" {
+  path = "ssh"
+  type = "ssh"
+  lifecycle { prevent_destroy = true }
+}
+
 resource "vault_mount" "tp_link" {
   path               = "tp-link"
   type               = "ssh"
