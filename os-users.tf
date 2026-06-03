@@ -7,14 +7,11 @@
 #
 # Two-step workflow:
 #
-#   Step 1 — Workstation: review and apply Vault changes
+#   Step 1 — Workstation: review and apply
 #     terraform plan
-#     terraform apply                               ← updates Vault + writes manifest
+#     terraform apply    ← updates Vault + writes manifest + copies to bastion2
 #
-#   Step 2 — Copy manifest to bastion2 (primary), run Ansible from there
-#     scp -P 1022 scripts/users.auto.yml \
-#       root@ssh.auto-deploy.net:/tmp/users.auto.yml
-#
+#   Step 2 — SSH into bastion2, run Ansible
 #     ssh -i ~/.ssh/id_rsa -p 1022 root@ssh.auto-deploy.net
 #
 #     ansible-playbook sync-os-users.yml -i inventory.yml \
@@ -38,4 +35,16 @@ resource "local_file" "ansible_users" {
       username => { status = try(user.status, "enabled") }
     }
   })
+}
+
+# Auto-copy manifest to bastion2 whenever it changes.
+# Ansible runs from bastion2 — the file must be there before running the playbook.
+resource "null_resource" "copy_manifest_to_bastion2" {
+  triggers = {
+    manifest_hash = local_file.ansible_users.id
+  }
+
+  provisioner "local-exec" {
+    command = "scp -P 1022 ${path.root}/scripts/users.auto.yml root@ssh.auto-deploy.net:/tmp/users.auto.yml"
+  }
 }
