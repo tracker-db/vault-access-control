@@ -52,6 +52,13 @@ locals {
     #   email = "jane@lab.internal"
     # }
 
+    # ubuntu exists on bastion 1020 only — default cloud image account.
+    # Role unclear; added as operator pending review.
+    "ubuntu" = {
+      roles = ["operator"]
+      email = "ubuntu@lab.internal"
+    }
+
     # ── Imported — previously unmanaged accounts ──
     # Previously had: admin policy
     "arti" = {
