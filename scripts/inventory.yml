@@ -1,0 +1,19 @@
+---
+# Ansible inventory — target servers for OS user sync
+#
+# Connection uses your Vault-signed SSH certificate.
+# Sign your key first: ./scripts/engineer-ssh-login.sh
+# The cert (~/.ssh/id_rsa-cert.pub) is picked up automatically by SSH.
+
+bastions:
+  hosts:
+    bastion0:
+      ansible_host: ssh.auto-deploy.net
+      ansible_port: 1020
+      ansible_user: root
+      ansible_ssh_private_key_file: ~/.ssh/id_rsa
+    bastion2:
+      ansible_host: ssh.auto-deploy.net
+      ansible_port: 1022
+      ansible_user: root
+      ansible_ssh_private_key_file: ~/.ssh/id_rsa
