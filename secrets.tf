@@ -91,6 +91,12 @@ resource "vault_kv_secret_v2" "anydesk_server_2" {
 # then use these creds for internal systems.
 # ──────────────────────────────────────────────
 
+variable "app_service_username" {
+  description = "OS username for the shared service account on internal systems"
+  type        = string
+  default     = "ej"
+}
+
 variable "app_service_ssh_private_key" {
   description = "SSH private key for app-service account"
   type        = string
@@ -110,7 +116,7 @@ resource "vault_kv_secret_v2" "app_service" {
   name  = "shared/app-service/credentials"
 
   data_json = jsonencode({
-    username        = "app-service"
+    username        = var.app_service_username
     password        = var.app_service_password
     ssh_private_key = var.app_service_ssh_private_key
     notes           = "Shared service account for utility server, libvirt hosts, containers"
