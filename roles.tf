@@ -6,6 +6,8 @@
 #   ssh     → Vault SSH CA cert signing for target hosts
 #   vault   → Vault admin/operator access (policies, secrets engines, auth)
 #   secret  → Read access to KV secrets (passwords, tokens, keys)
+#
+# TTLs are in seconds to avoid Vault API normalization drift.
 # ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
 locals {
@@ -22,14 +24,14 @@ locals {
 
       grants = {
         "bastion" = {
-          type    = "ssh"
+          type = "ssh"
           targets = [
             "ssh.auto-deploy.net:1020",
             "ssh.auto-deploy.net:1022",
           ]
           access  = "admin"
-          ttl     = "8h"
-          max_ttl = "24h"
+          ttl     = 28800 # 8h
+          max_ttl = 86400 # 24h
         }
       }
 
@@ -52,14 +54,14 @@ locals {
 
       grants = {
         "bastion" = {
-          type    = "ssh"
+          type = "ssh"
           targets = [
             "ssh.auto-deploy.net:1020",
             "ssh.auto-deploy.net:1022",
           ]
           access  = "read"
-          ttl     = "4h"
-          max_ttl = "8h"
+          ttl     = 14400 # 4h
+          max_ttl = 28800 # 8h
         }
       }
 
@@ -78,14 +80,14 @@ locals {
 
       grants = {
         "bastion" = {
-          type    = "ssh"
+          type = "ssh"
           targets = [
             "ssh.auto-deploy.net:1020",
             "ssh.auto-deploy.net:1022",
           ]
           access  = "read"
-          ttl     = "2h"
-          max_ttl = "4h"
+          ttl     = 7200  # 2h
+          max_ttl = 14400 # 4h
         }
       }
 
@@ -97,6 +99,22 @@ locals {
     }
 
     # ──────────────────────────────────────────
+    # Vault Admin — Vault operations only
+    #
+    # Gets: full Vault admin policy (policies, auth,
+    #       secrets engines). No SSH CA grants.
+    # ──────────────────────────────────────────
+    "vault-admin" = {
+      description = "Vault administration — manage policies, auth methods, secrets engines"
+
+      grants = {}
+
+      vault_admin = true
+
+      secret_paths = []
+    }
+
+    # ──────────────────────────────────────────
     # Read-Only — monitoring, auditing
     # ──────────────────────────────────────────
     "read-only" = {
@@ -104,14 +122,14 @@ locals {
 
       grants = {
         "bastion" = {
-          type    = "ssh"
+          type = "ssh"
           targets = [
             "ssh.auto-deploy.net:1020",
             "ssh.auto-deploy.net:1022",
           ]
           access  = "read"
-          ttl     = "2h"
-          max_ttl = "4h"
+          ttl     = 7200  # 2h
+          max_ttl = 14400 # 4h
         }
       }
 

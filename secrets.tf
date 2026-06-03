@@ -18,9 +18,14 @@
 # ──────────────────────────────────────────────
 
 resource "vault_mount" "kv" {
-  path        = "secret"
-  type        = "kv-v2"
-  description = "KV v2 — all lab secrets"
+  path               = "secret"
+  type               = "kv"
+  description        = "KV v2 — all lab secrets"
+  listing_visibility = "hidden"
+
+  options = {
+    version = "2"
+  }
 
   lifecycle {
     prevent_destroy = true
@@ -109,7 +114,7 @@ resource "vault_kv_secret_v2" "app_service" {
     password        = var.app_service_password
     ssh_private_key = var.app_service_ssh_private_key
     notes           = "Shared service account for utility server, libvirt hosts, containers"
-    targets         = [
+    targets = [
       "utility server",
       "libvirt-host-1",
       "libvirt-host-2",
