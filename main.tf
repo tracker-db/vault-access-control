@@ -209,44 +209,48 @@ resource "vault_auth_backend" "approle" {
 # ──────────────────────────────────────────────
 # User Policy Aggregation
 #
-# For each user, collect ALL policies from their roles:
+# enabled = true  → full policy set from roles + extra_policies
+# enabled = false → empty policy list (account kept, zero access)
+#
+# Policies collected when enabled:
 #   - SSH CA policies (from module)
-#   - vault-admin policy (if role.vault_admin = true)
-#   - kv-admin + kv-read policies (if role.vault_admin = true)
-#   - aws-access policy (if role.aws_access = true)
-#   - extra_policies (per-user overrides for legacy custom policies)
+#   - vault-admin + kv-admin (if role.vault_admin = true)
+#   - kv-read (if role.secret_paths not empty)
+#   - aws-access (if role.aws_access = true)
+#   - extra_policies (per-user legacy overrides)
 # ──────────────────────────────────────────────
 
 locals {
   user_policies = {
-    for username, user in local.users : username => distinct(flatten(concat(
-      # SSH CA policies from the RBAC module
-      [for role_name in user.roles : module.vault_rbac.role_policy_names[role_name]],
+    for username, user in local.users : username => (
+      try(user.enabled, true) ? distinct(flatten(concat(
+        # SSH CA policies from the RBAC module
+        [for role_name in user.roles : module.vault_rbac.role_policy_names[role_name]],
 
-      # vault-admin policy
-      [for role_name in user.roles :
-        local.roles[role_name].vault_admin ? "vault-admin" : ""
-      ],
+        # vault-admin policy
+        [for role_name in user.roles :
+          local.roles[role_name].vault_admin ? "vault-admin" : ""
+        ],
 
-      # KV admin policy (platform-admins can write secrets)
-      [for role_name in user.roles :
-        local.roles[role_name].vault_admin ? "kv-admin" : ""
-      ],
+        # KV admin policy
+        [for role_name in user.roles :
+          local.roles[role_name].vault_admin ? "kv-admin" : ""
+        ],
 
-      # AWS access policy
-      [for role_name in user.roles :
-        try(local.roles[role_name].aws_access, false) ? "aws-access" : ""
-      ],
+        # AWS access policy
+        [for role_name in user.roles :
+          try(local.roles[role_name].aws_access, false) ? "aws-access" : ""
+        ],
 
-      # KV read policies
-      [for role_name in user.roles :
-        length(local.roles[role_name].secret_paths) > 0 ? "kv-read-${role_name}" : ""
-      ],
+        # KV read policies
+        [for role_name in user.roles :
+          length(local.roles[role_name].secret_paths) > 0 ? "kv-read-${role_name}" : ""
+        ],
 
-      # Extra policies — for pre-existing custom policies not yet mapped to a role.
-      # Use sparingly. The goal is to migrate these into proper roles over time.
-      try(user.extra_policies, []),
-    )))
+        # Extra policies — legacy custom policies not yet mapped to a role.
+        try(user.extra_policies, []),
+      ))) : []
+    )
   }
 
   sa_policies = {
