@@ -92,6 +92,157 @@ locals {
       email = "joe@lab.internal"
     }
 
+    # ── Bastion OS users — added from /etc/passwd audit ─────
+    # behnam authored the original Vault policies — platform-admin
+    "behnam" = {
+      roles = ["platform-admin"]
+      email = "behnam@lab.internal"
+    }
+    # ejbest is ej's alternate OS account — platform-admin
+    "ejbest" = {
+      roles = ["platform-admin"]
+      email = "ej@lab.internal"
+    }
+
+    # All remaining bastion OS users — operator (bastion deploy access).
+    # Role unclear or not confirmed as sudoer. Upgrade individually as needed.
+    "aman" = {
+      roles = ["operator"]
+      email = "aman@lab.internal"
+    }
+    "aqib" = {
+      roles = ["operator"]
+      email = "aqib@lab.internal"
+    }
+    "artif" = {
+      roles = ["operator"]
+      email = "artif@lab.internal"
+    }
+    "bhavesh" = {
+      roles = ["operator"]
+      email = "bhavesh@lab.internal"
+    }
+    "boby" = {
+      roles = ["operator"]
+      email = "boby@lab.internal"
+    }
+    "es" = {
+      roles = ["operator"]
+      email = "es@lab.internal"
+    }
+    "farukh" = {
+      roles = ["operator"]
+      email = "farukh@lab.internal"
+    }
+    "fawaz-test" = {
+      roles = ["operator"]
+      email = "fawaz-test@lab.internal"
+    }
+    "golla" = {
+      roles = ["operator"]
+      email = "golla@lab.internal"
+    }
+    "hamza" = {
+      roles = ["operator"]
+      email = "hamza@lab.internal"
+    }
+    "jerry" = {
+      roles = ["operator"]
+      email = "jerry@lab.internal"
+    }
+    "jorge" = {
+      roles = ["operator"]
+      email = "jorge@lab.internal"
+    }
+    "kishor" = {
+      roles = ["operator"]
+      email = "kishor@lab.internal"
+    }
+    "lucky" = {
+      roles = ["operator"]
+      email = "lucky@lab.internal"
+    }
+    "mangash" = {
+      roles = ["operator"]
+      email = "mangash@lab.internal"
+    }
+    "manish" = {
+      roles = ["operator"]
+      email = "manish@lab.internal"
+    }
+    "miguel" = {
+      roles = ["operator"]
+      email = "miguel@lab.internal"
+    }
+    "neel" = {
+      roles = ["operator"]
+      email = "neel@lab.internal"
+    }
+    "nirav" = {
+      roles = ["operator"]
+      email = "nirav@lab.internal"
+    }
+    "omen" = {
+      roles = ["operator"]
+      email = "omen@lab.internal"
+    }
+    "pavan" = {
+      roles = ["operator"]
+      email = "pavan@lab.internal"
+    }
+    "peterlight" = {
+      roles = ["operator"]
+      email = "peterlight@lab.internal"
+    }
+    "ramu" = {
+      roles = ["operator"]
+      email = "ramu@lab.internal"
+    }
+    "ravi" = {
+      roles = ["operator"]
+      email = "ravi@lab.internal"
+    }
+    "roy" = {
+      roles = ["operator"]
+      email = "roy@lab.internal"
+    }
+    "saif" = {
+      roles = ["operator"]
+      email = "saif@lab.internal"
+    }
+    "santosh" = {
+      roles = ["operator"]
+      email = "santosh@lab.internal"
+    }
+    "sergej" = {
+      roles = ["operator"]
+      email = "sergej@lab.internal"
+    }
+    "solomon" = {
+      roles = ["operator"]
+      email = "solomon@lab.internal"
+    }
+    "taimour" = {
+      roles = ["operator"]
+      email = "taimour@lab.internal"
+    }
+    "test" = {
+      roles = ["operator"]
+      email = "test@lab.internal"
+    }
+    "testuser" = {
+      roles = ["operator"]
+      email = "testuser@lab.internal"
+    }
+    "tim" = {
+      roles = ["operator"]
+      email = "tim@lab.internal"
+    }
+    "vikhil" = {
+      roles = ["operator"]
+      email = "vikhil@lab.internal"
+    }
+
     # Previously had: no policies — read-only baseline
     "air" = {
       roles = ["read-only"]

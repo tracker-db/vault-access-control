@@ -46,6 +46,36 @@ locals {
     }
 
     # ──────────────────────────────────────────
+    # Operator — general engineering access
+    #
+    # Bastion SSH as deploy user. No vault-admin,
+    # no AWS. Default role for engineers whose
+    # specific responsibilities are not yet defined.
+    # Upgrade to platform-admin once confirmed.
+    # ──────────────────────────────────────────
+    "operator" = {
+      description = "General operations — bastion SSH as deploy user"
+
+      grants = {
+        "bastion" = {
+          type = "ssh"
+          targets = [
+            "ssh.auto-deploy.net:1020",
+            "ssh.auto-deploy.net:1022",
+          ]
+          access  = "read"
+          ttl     = 14400 # 4h
+          max_ttl = 28800 # 8h
+        }
+      }
+
+      vault_admin = false
+      aws_access  = false
+
+      secret_paths = []
+    }
+
+    # ──────────────────────────────────────────
     # K8s Operator — cluster node access only
     # ──────────────────────────────────────────
     "k8s-operator" = {
