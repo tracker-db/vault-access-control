@@ -73,15 +73,15 @@ locals {
       email = "ej@lab.internal"
     }
 
-    # nandha holds a custom policy (nandhapo) that grants:
-    #   - aws/*          full CRUD+sudo on the AWS secrets engine
-    #   - secrets/*      full CRUD on the secrets/ KV mount
-    # This access level is broader than platform-admin and does not map to any
-    # existing role. Kept here alongside read-only until Phase 2 defines a
-    # proper role (e.g. aws-operator) for this access pattern.
-    # Migration: remove extra_policies, assign the new role, retire nandhapo.
+    # nandha holds nandhapo in addition to platform-admin.
+    # nandhapo grants:
+    #   - aws/*      full CRUD+sudo on the AWS secrets engine
+    #   - secrets/*  full CRUD on the secrets/ KV mount
+    # No other managed user currently has AWS engine access — see Phase 2
+    # backlog to decide whether aws/* belongs on platform-admin for everyone
+    # or becomes a separate role. Until then extra_policies preserves access.
     "nandha" = {
-      roles          = ["read-only"]
+      roles          = ["platform-admin"]
       email          = "nandha@lab.internal"
       extra_policies = ["nandhapo"]
     }

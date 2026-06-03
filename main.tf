@@ -14,17 +14,16 @@ terraform {
     }
   }
 
-  # ── PHASE 2: migrate to a remote backend ──────────────────
-  # The local backend below is single-machine and has no locking.
-  # For the enterprise, choose one of the following and run:
-  #   terraform init -migrate-state
+  # State is stored locally, backed up via iCloud sync and Time Machine.
+  # This is the chosen approach for this environment — no cloud backend needed.
+  # If a remote backend is required in future (multi-operator or CI/CD),
+  # pre-written alternatives are below — uncomment and run terraform init -migrate-state.
   #
-  # Option A — GCS (recommended if primary infra is GCP):
+  # Option A — GCS:
   #   backend "gcs" {
   #     bucket = "nextresearch-terraform-state"
   #     prefix = "vault-access-control"
   #   }
-  #
   # Option B — S3 + DynamoDB:
   #   backend "s3" {
   #     bucket         = "nextresearch-terraform-state"
@@ -33,7 +32,6 @@ terraform {
   #     dynamodb_table = "terraform-state-lock"
   #     encrypt        = true
   #   }
-  # ──────────────────────────────────────────────────────────
   backend "local" {
     path = "/opt/terraform/state/user-access.tfstate"
   }
