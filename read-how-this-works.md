@@ -211,3 +211,120 @@ re-imported. No Vault data is lost if the state file is lost.
 | Can I store a new secret in Vault without Terraform knowing? | Yes. Write directly to Vault. Terraform will never see it unless you declare and import it. |
 | What if I want Terraform to manage a secret already in Vault? | Import it (`terraform import`), add it to `secrets.tf`, add the value to `secrets.auto.tfvars`. |
 | Who owns the secrets in `argo-cd/`, `espch/`, etc.? | Their respective applications and teams. This repo only governs access (policies), not content. |
+
+---
+
+## Thinking it through further — configuration vs. secrets vs. tokens
+
+### 1) Configuration in Vault belongs in Terraform
+
+Anything structural and non-sensitive belongs fully in Terraform and git:
+
+- Mount paths and types
+- Policy HCL definitions
+- Role definitions (TTLs, allowed users)
+- Auth backend configurations
+- User account names (not passwords)
+- SSH CA role settings
+
+None of this is secret. All of it is in `.tf` files in this repo today.
+
+### 2) Actual secrets — different answer for each type
+
+**Passwords for humans** (AnyDesk password, app-service password)
+- Human needs to know it → Bitwarden/LastPass is right
+- Also in Vault → Vault is the live copy
+- Also in `secrets.auto.tfvars` → Terraform is the writer
+- All three stay in sync. Bitwarden is the human reference. Vault is the live value.
+
+**Certificates**
+- Vault PKI engine issues and renews them — they change on rotation
+- Bitwarden/LastPass is NOT suitable (certs expire, auto-rotate)
+- Vault is the only right home for certs
+- Terraform declares the PKI engine exists but does not manage individual certs
+
+**API tokens and service credentials** — see section 3 below
+
+### 3) Tokens (xyz-token) — the key question for Bitwarden/LastPass
+
+Ask one question about every token or secret:
+
+```
+WHO needs to access this?
+
+  A human, interactively            → Vault + Bitwarden/LastPass
+  (e.g. pasting a token into a
+  config form or logging in)
+
+  A machine, programmatically       → Vault ONLY
+  (e.g. an app fetching its own     (Bitwarden cannot help machines)
+  API key at runtime)
+
+  Both                              → Vault as system of record,
+                                      Bitwarden as human reference copy
+
+  Rotates frequently or is          → Vault ONLY — dynamic secrets
+  auto-generated                    (rotation defeats Bitwarden storage)
+```
+
+> Vault is a professional-grade secret manager built for machines.
+> Bitwarden/LastPass is a secret manager built for humans.
+> A token only machines read should never need to be in Bitwarden.
+> A token a human occasionally pastes somewhere should be in both.
+
+### Bitwarden/LastPass boundary — drawn precisely
+
+```
+Bitwarden/LastPass holds:
+  ✓ Secrets a human needs to interactively access a system
+  ✓ Reference copy of secrets.auto.tfvars values
+  ✓ The "what it should be" before updating Vault or Terraform
+  ✗ NOT tokens and certs that only machines consume
+  ✗ NOT dynamically-generated credentials (they expire)
+  ✗ NOT secrets owned by applications (argo-cd, espch, etc.)
+```
+
+### The insurance for machine tokens is Vault version history — not Bitwarden
+
+Every KV v2 secret keeps its last 10 versions automatically. If a token is accidentally
+overwritten, it can be restored immediately:
+
+```bash
+# See all versions of a secret
+vault kv metadata get secret/path/to/xyz-token
+
+# Read a specific old version
+vault kv get -version=2 secret/path/to/xyz-token
+
+# Restore a previous version
+vault kv undelete -versions=2 secret/path/to/xyz-token
+```
+
+The stronger protection for machine tokens: do not declare them in Terraform at all.
+Let the application that owns the token write it directly to Vault. Terraform owns the
+mount and the policy that grants access. The value stays out of Terraform entirely —
+meaning `terraform apply` can never accidentally overwrite it.
+
+---
+
+## The clean model — where everything lives
+
+```
+Terraform owns:     Structure, access control, platform bootstrap credentials
+Vault owns:         All live secret values, version history
+Bitwarden owns:     Human-accessible copies of platform bootstrap credentials
+Applications own:   Their own secrets (write directly to Vault, Terraform never touches)
+```
+
+Applied to this environment:
+
+| Secret | Who uses it | Right home |
+|--------|------------|------------|
+| AnyDesk password | Human logs in interactively | Vault + Bitwarden |
+| AnyDesk ID | Human connects | Vault + Bitwarden |
+| app-service password | Human after bastion hop | Vault + Bitwarden |
+| `tracker-db/data/API_AUTH_TOKEN` | CI/CD pipeline (machine) | Vault only |
+| `cloudflare/*` SSL certs | Automation (machine) | Vault only |
+| `espch/*` tokens | ESPCH service (machine) | Vault only |
+| `argo-cd/*` credentials | ArgoCD app (machine) | Vault only |
+| GCP / AWS dynamic credentials | Generated on-demand | Vault only — they expire |
