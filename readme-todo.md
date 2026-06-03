@@ -1,66 +1,76 @@
 # TODO
 
-## Task 1 — DONE
-Add service accounts and vault-admin role:
-- `svc-anydesk-blue` (AppRole, read-only)
-- `svc-anydesk-green` (AppRole, read-only)
-- `svc-bastion` (AppRole, deployer)
-- `vault-admin` role added to `roles.tf`
+---
+
+## Phase 1 — COMPLETE
+
+### What was built
+- Role system: `platform-admin`, `k8s-operator`, `deployer`, `vault-admin`, `read-only`
+- SSH CA role (`ssh-bastion`) with `allow_user_certificates = true`
+- Vault policies auto-generated per role: `ssh-role-*`, `kv-read-*`, `vault-admin`, `kv-admin`
+- All userpass accounts and AppRole service accounts under Terraform management
+- `terraform plan` returns **No changes** — reliable as a CI/CD gate
+
+### Accounts under management
+**Users (20):** tom, harry, sally, fawaz, desmond, rich, vishal, ej, arti, niam, richard,
+nandha, joe, air, bob, jade, mac, nice, nick, sebastin
+
+**Service accounts (10):** app-service, github-actions-runner, vault-agent-blue,
+vault-agent-green, svc-anydesk-blue, svc-anydesk-green, svc-bastion,
+ansible-approle, espch-approle, terraform
+
+### Key decisions recorded
+- TTLs in seconds throughout (prevents Vault API normalization drift)
+- `extra_policies` field available on users for pre-role-system custom policies
+- `nandha` carries `nandhapo` (aws/*, secrets/* full access) pending Phase 2 role design
+- `jenkins` AppRole and policy deleted (decommissioned)
+- `approle-policy` deleted (unused after standardisation)
+- Passwords not managed by Terraform — set once via `vault write`, users own them after
 
 ---
 
-## Task 2 — Testing & Verification
+## Phase 2 — Backlog
 
-### Layer 1 — Static checks (no Vault needed)
-- [ ] `override.tf` created (local module path, gitignored)
-- [ ] `terraform fmt -check -recursive`
-- [ ] `terraform init`
-- [ ] `terraform validate`
+### P1 — Blocking or high risk
 
-### Layer 2 — Vault connectivity (confirmed)
-- [x] Vault reachable: `https://vault.nextresearch.io` (v1.18.2, unsealed, HA active)
-- [x] Token valid (root, no TTL)
-- [x] SSH CA engine at `ssh/` — CA already configured
-- [x] `userpass/` auth already enabled
-- [x] `approle/` auth already enabled
-- [ ] `terraform plan` — review all intended changes before apply
+- [ ] **Remote backend for state**
+  Local state at `/opt/terraform/state/user-access.tfstate` has no locking and
+  is single-machine. Alternatives are pre-written in `main.tf` (GCS / S3).
+  Run `terraform init -migrate-state` after choosing.
 
-### Layer 3 — Apply and verify
-- [ ] `terraform apply`
-- [ ] `vault list auth/userpass/users` — confirm all users from `users.tf`
-- [ ] `vault list auth/approle/role` — confirm all service accounts
-- [ ] `vault policy list` — confirm all policies
-- [ ] `vault read auth/userpass/users/tom` — spot-check user policies
-- [ ] `vault read auth/approle/role/svc-bastion` — spot-check service account
-- [ ] `vault policy read ssh-role-vault-admin` — confirm vault-admin policy exists
+- [ ] **Fill in `secrets.auto.tfvars`**
+  AnyDesk server credentials and `app_service_password` are still `CHANGE_ME`.
+  Until these are set, `terraform apply` will overwrite those KV secrets with
+  placeholder values. Keep local apply gated until populated.
 
-### Layer 4 — Pin SHA and clean up
-- [x] Commit module changes on `modules-terraform-vault-rbac/phase1`
-- [x] Get SHA: `9656cb888be83a2cd577af4318c2ccec30fc2600`
-- [x] Replace `<SHA>` in `main.tf` source block
-- [x] Delete `override.tf`
-- [x] `terraform init` — remote module resolves from GitHub
-- [x] `terraform plan` — stable (7 known-noise changes; see Task 3)
+- [ ] **nandha role design**
+  `nandha` has `nandhapo` policy: full access to `aws/*` and `secrets/*`.
+  This access pattern needs a proper role (e.g. `aws-operator`).
+  Steps: define role → assign to nandha → remove `extra_policies` → retire nandhapo.
 
----
+### P2 — Important, not blocking
 
-## Task 3 — RESOLVED: terraform plan noise
+- [ ] **CI/CD pipeline via terraform AppRole**
+  `terraform` AppRole (vault-admin role) exists for automation. Document the
+  workflow: fetch role_id + secret_id from Vault, run `terraform plan/apply`
+  in CI without a human root token.
 
-**Plan is now clean: `No changes. Your infrastructure matches the configuration.`**
+- [ ] **Password bootstrap docs**
+  New user onboarding requires a manual `vault write auth/userpass/users/<name> password=X`
+  step after Terraform creates the account. Automate or document in runbook.
 
-### What was causing the noise
-Two separate issues, both fixed:
-1. `password` included in `data_json` — Vault never returns it on read,
-   so Terraform always saw a diff. Fix: removed password from config.
-   Initial passwords set once manually: `vault write auth/userpass/users/<name> password=X`
-2. TTL format mismatch — config sent `"8h"` (string) but Vault returns
-   `28800` (number/seconds). Fix: config now sends seconds (`28800`, `86400`).
+- [ ] **espch-approle role review**
+  Assigned `read-only` as a safe default. Confirm this is correct for ESPCH's
+  actual access needs.
 
-### Pre-existing resources — import decision (still open)
-Pre-existing userpass accounts (ej, bob, mac, air, richard, etc.) and
-AppRole roles (ansible-approle, jenkins, terraform) exist in Vault outside
-Terraform state. Now that plan is clean, imports will give trustworthy signal.
+### P3 — Expand Terraform coverage
 
-- **Userpass accounts**: add to `users.tf`, then `terraform import`
-  (no password set by Terraform — users keep existing passwords)
-- **AppRole roles**: decision needed on which roles this project owns
+The following Vault resources exist but are outside Terraform management.
+Each requires a deliberate decision before importing.
+
+- [ ] Auth methods: `cert/`, `gcp/`, `oidc/`, `okta/` — managed by this repo or separate?
+- [ ] KV mounts: `argo-cd/`, `proxmox/`, `libvirt/`, `englab/`, `cloudflare/`, etc.
+- [ ] PKI engine (`pki/`) — certificate authority management
+- [ ] Transit engine (`transit/`) — encryption as a service
+- [ ] Remaining custom policies: `nandhapo`, `ej-policy`, `espch`, `root-equivalent`, etc.
+- [ ] Other users visible in `vault list auth/userpass/users` not yet in this repo
