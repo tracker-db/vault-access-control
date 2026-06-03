@@ -6,9 +6,11 @@
 # To disable:   Set status = "disabled", open PR, merge.
 #               → Vault: all policies removed (no access)
 #               → OS:    account locked   (cannot log in, home kept)
-# To offboard:  Remove the user block entirely, open PR, merge.
-#               → Vault: account deleted
-#               → OS:    userdel -r       (account + home dir gone)
+# To offboard:  Step 1 — Set status = "removed", open PR, merge.
+#               → Vault: no change (already no policies)
+#               → OS:    userdel -r (account + home dir deleted by Ansible)
+#               Step 2 — Remove the user block entirely, open PR, merge.
+#               → Vault: userpass account deleted
 #
 # Fields:
 #   roles          required  list of role names from roles.tf
@@ -112,7 +114,7 @@ locals {
     "nandha" = {
       roles          = ["platform-admin"]
       email          = "nandha@lab.internal"
-      status         = "disabled"
+      status         = "removed"
       extra_policies = ["nandhapo"]
     }
 

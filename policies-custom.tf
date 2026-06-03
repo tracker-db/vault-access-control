@@ -245,21 +245,6 @@ resource "vault_policy" "key_cloak_policy" {
   EOT
 }
 
-# nandha personal policy — aws/* and secrets/* full access.
-# nandha is on platform-admin (gets aws-access) + this policy (secrets/*).
-# Retain until secrets/* access is formalised into a role.
-resource "vault_policy" "nandhapo" {
-  name = "nandhapo"
-
-  policy = <<-EOT
-    path "aws/*" {
-      capabilities = ["create", "read", "update", "delete", "list", "sudo"]
-    }
-    path "secrets/*" {
-      capabilities = ["create", "read", "update", "delete", "list", "sudo"]
-    }
-  EOT
-}
 
 # Root-equivalent — path "*" full access. Retained from pre-role era.
 # No users should be assigned this. Candidate for retirement.

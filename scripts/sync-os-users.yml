@@ -48,3 +48,13 @@
       when:
         - item.value.status == 'disabled'
         - item.key in ansible_facts.getent_passwd
+
+    - name: Delete removed users and home directories (userdel -r)
+      ansible.builtin.user:
+        name: "{{ item.key }}"
+        state: absent
+        remove: true
+      loop: "{{ vault_users | dict2items }}"
+      when:
+        - item.value.status == 'removed'
+        - item.key in ansible_facts.getent_passwd
