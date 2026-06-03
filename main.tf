@@ -160,6 +160,20 @@ resource "vault_policy" "kv_read" {
   ])
 }
 
+# AWS secrets engine access — platform-admin and aws-operator roles
+resource "vault_policy" "aws_access" {
+  name = "aws-access"
+
+  policy = <<-EOT
+    path "aws/*" {
+      capabilities = ["create", "read", "update", "delete", "list"]
+    }
+    path "aws/sts/*" {
+      capabilities = ["create", "update"]
+    }
+  EOT
+}
+
 # Platform-admins also get KV write (they manage secrets)
 resource "vault_policy" "kv_admin" {
   name = "kv-admin"
@@ -198,8 +212,9 @@ resource "vault_auth_backend" "approle" {
 # For each user, collect ALL policies from their roles:
 #   - SSH CA policies (from module)
 #   - vault-admin policy (if role.vault_admin = true)
-#   - KV read policy (if role.secret_paths not empty)
-#   - KV admin policy (if role.vault_admin = true)
+#   - kv-admin + kv-read policies (if role.vault_admin = true)
+#   - aws-access policy (if role.aws_access = true)
+#   - extra_policies (per-user overrides for legacy custom policies)
 # ──────────────────────────────────────────────
 
 locals {
@@ -218,6 +233,11 @@ locals {
         local.roles[role_name].vault_admin ? "kv-admin" : ""
       ],
 
+      # AWS access policy
+      [for role_name in user.roles :
+        try(local.roles[role_name].aws_access, false) ? "aws-access" : ""
+      ],
+
       # KV read policies
       [for role_name in user.roles :
         length(local.roles[role_name].secret_paths) > 0 ? "kv-read-${role_name}" : ""
@@ -234,6 +254,9 @@ locals {
       [for role_name in sa.roles : module.vault_rbac.role_policy_names[role_name]],
       [for role_name in sa.roles :
         length(local.roles[role_name].secret_paths) > 0 ? "kv-read-${role_name}" : ""
+      ],
+      [for role_name in sa.roles :
+        try(local.roles[role_name].aws_access, false) ? "aws-access" : ""
       ],
     )))
   }

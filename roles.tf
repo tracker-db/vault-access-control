@@ -20,7 +20,7 @@ locals {
     #        app-service creds (to hop into internal systems)
     # ──────────────────────────────────────────
     "platform-admin" = {
-      description = "Full lab access — Vault admin, bastion SSH, AnyDesk, app-service"
+      description = "Full lab access — Vault admin, bastion SSH, AnyDesk, app-service, AWS"
 
       grants = {
         "bastion" = {
@@ -35,10 +35,9 @@ locals {
         }
       }
 
-      # Vault admin — manage policies, secrets engines, auth methods
       vault_admin = true
+      aws_access  = true
 
-      # KV secrets this role can READ
       secret_paths = [
         "secret/data/shared/anydesk/*",
         "secret/data/shared/app-service/*",
@@ -66,6 +65,7 @@ locals {
       }
 
       vault_admin = false
+      aws_access  = false
 
       secret_paths = [
         "secret/data/shared/app-service/*",
@@ -92,10 +92,30 @@ locals {
       }
 
       vault_admin = false
+      aws_access  = false
 
       secret_paths = [
         "secret/data/shared/app-service/*",
       ]
+    }
+
+    # ──────────────────────────────────────────
+    # AWS Operator — dynamic AWS credentials
+    #
+    # Gets: aws/* access (generate AWS creds via
+    # Vault's AWS secrets engine). No SSH CA grants.
+    # Assign to individuals or service accounts that
+    # need AWS credentials but not full platform-admin.
+    # ──────────────────────────────────────────
+    "aws-operator" = {
+      description = "AWS dynamic credentials via Vault AWS secrets engine"
+
+      grants = {}
+
+      vault_admin = false
+      aws_access  = true
+
+      secret_paths = []
     }
 
     # ──────────────────────────────────────────
@@ -110,6 +130,7 @@ locals {
       grants = {}
 
       vault_admin = true
+      aws_access  = false
 
       secret_paths = []
     }
@@ -134,6 +155,7 @@ locals {
       }
 
       vault_admin = false
+      aws_access  = false
 
       secret_paths = []
     }
