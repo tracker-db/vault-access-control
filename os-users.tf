@@ -45,6 +45,6 @@ resource "null_resource" "copy_manifest_to_bastion2" {
   }
 
   provisioner "local-exec" {
-    command = "scp -P 1022 ${path.root}/scripts/users.auto.yml root@ssh.auto-deploy.net:/tmp/users.auto.yml"
+    command = "scp -P 1022 -i ~/.ssh/id_rsa -o StrictHostKeyChecking=no -o BatchMode=yes ${path.root}/scripts/users.auto.yml root@ssh.auto-deploy.net:/tmp/users.auto.yml"
   }
 }
