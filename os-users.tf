@@ -7,13 +7,21 @@
 #
 # Two-step workflow:
 #
-#   Step 1 — Review all changes before touching anything:
+#   Step 1 — Workstation: review and apply Vault changes
 #     terraform plan
-#     ansible-playbook scripts/sync-os-users.yml -i scripts/inventory.yml --check --diff
-#
-#   Step 2 — Apply:
 #     terraform apply                               ← updates Vault + writes manifest
-#     ansible-playbook scripts/sync-os-users.yml -i scripts/inventory.yml
+#
+#   Step 2 — Copy manifest to bastion2 (primary), run Ansible from there
+#     scp -P 1022 scripts/users.auto.yml \
+#       root@ssh.auto-deploy.net:/tmp/users.auto.yml
+#
+#     ssh -i ~/.ssh/id_rsa -p 1022 root@ssh.auto-deploy.net
+#
+#     ansible-playbook sync-os-users.yml -i inventory.yml \
+#       --extra-vars "anydesk_ssh_password=<password>" --check --diff
+#
+#     ansible-playbook sync-os-users.yml -i inventory.yml \
+#       --extra-vars "anydesk_ssh_password=<password>"
 #
 # What Ansible enforces per server:
 #   status = "enabled"  → create account (if missing), ensure unlocked

@@ -1,19 +1,39 @@
 ---
-# Ansible inventory — target servers for OS user sync
+# Ansible inventory
+# Run Ansible FROM bastion2 (primary) — it reaches all targets on the LAN.
 #
-# Connection uses your Vault-signed SSH certificate.
-# Sign your key first: ./scripts/engineer-ssh-login.sh
-# The cert (~/.ssh/id_rsa-cert.pub) is picked up automatically by SSH.
+# Connection notes:
+#   bastion2    — ansible_connection: local (Ansible runs ON this machine)
+#   bastion0    — LAN 192.168.2.100, root access
+#   blue-anydesk — LAN 192.168.3.91, user ej with passwordless sudo
+#   green-anydesk — currently down, uncomment when back online
+#
+# Requires sshpass on bastion2 for anydesk password auth:
+#   apt install sshpass   (already confirmed installed)
+#
+# Pass anydesk password at runtime — never store in this file:
+#   ansible-playbook sync-os-users.yml -i inventory.yml \
+#     --extra-vars "anydesk_ssh_password=<password>"
 
 bastions:
   hosts:
-    bastion0:
-      ansible_host: ssh.auto-deploy.net
-      ansible_port: 1020
-      ansible_user: root
-      ansible_ssh_private_key_file: ~/.ssh/id_rsa
     bastion2:
-      ansible_host: ssh.auto-deploy.net
-      ansible_port: 1022
+      ansible_connection: local
+    bastion0:
+      ansible_host: 192.168.2.100
       ansible_user: root
-      ansible_ssh_private_key_file: ~/.ssh/id_rsa
+
+anydesk:
+  hosts:
+    blue-anydesk:
+      ansible_host: 192.168.3.91
+      ansible_user: ej
+      ansible_become: true
+      ansible_become_method: sudo
+      ansible_password: "{{ anydesk_ssh_password }}"
+    # green-anydesk:                      # down — add when back online
+    #   ansible_host: <TBD>
+    #   ansible_user: ej
+    #   ansible_become: true
+    #   ansible_become_method: sudo
+    #   ansible_password: "{{ anydesk_ssh_password }}"
