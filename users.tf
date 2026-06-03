@@ -2,9 +2,19 @@
 # ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 # HUMAN USERS — Who are the engineers?
 #
-# To onboard:  Add a user block, open PR, merge, set password.
-# To offboard: Remove the user block, open PR, merge. Done.
-# To change access: Move them to a different role.
+# To onboard:   Add a user block, open PR, merge, set password.
+# To disable:   Set enabled = false, open PR, merge.
+#               → Vault: all policies removed (no access)
+#               → OS:    account locked   (cannot log in, home kept)
+# To offboard:  Remove the user block entirely, open PR, merge.
+#               → Vault: account deleted
+#               → OS:    userdel -r       (account + home dir gone)
+#
+# Fields:
+#   roles          required  list of role names from roles.tf
+#   email          required  user's email address
+#   enabled        optional  default true — set false to suspend access
+#   extra_policies optional  legacy custom policies not yet in a role
 #
 # Users NEVER reference servers directly. They get roles.
 # Roles define what servers they can access (see roles.tf).
@@ -51,6 +61,12 @@ locals {
     #   roles = ["k8s-operator", "deployer"]
     #   email = "jane@lab.internal"
     # }
+
+    # ubuntu exists on bastion 1020 only — default cloud image account.
+    "ubuntu" = {
+      roles = ["operator"]
+      email = "ubuntu@lab.internal"
+    }
 
     # ── Imported — previously unmanaged accounts ──
     # Previously had: admin policy
