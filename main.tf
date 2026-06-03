@@ -209,8 +209,8 @@ resource "vault_auth_backend" "approle" {
 # ──────────────────────────────────────────────
 # User Policy Aggregation
 #
-# enabled = true  → full policy set from roles + extra_policies
-# enabled = false → empty policy list (account kept, zero access)
+# status = "enabled"  → full policy set from roles + extra_policies
+# status = "disabled" → empty policy list (account kept, zero access)
 #
 # Policies collected when enabled:
 #   - SSH CA policies (from module)
@@ -223,7 +223,7 @@ resource "vault_auth_backend" "approle" {
 locals {
   user_policies = {
     for username, user in local.users : username => (
-      try(user.enabled, true) ? distinct(flatten(concat(
+      try(user.status, "enabled") == "enabled" ? distinct(flatten(concat(
         # SSH CA policies from the RBAC module
         [for role_name in user.roles : module.vault_rbac.role_policy_names[role_name]],
 
