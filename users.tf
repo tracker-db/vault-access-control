@@ -52,5 +52,68 @@ locals {
     #   email = "jane@lab.internal"
     # }
 
+    # ── Imported — previously unmanaged accounts ──
+    # Previously had: admin policy
+    "arti" = {
+      roles = ["platform-admin"]
+      email = "arti@lab.internal"
+    }
+    "niam" = {
+      roles = ["platform-admin"]
+      email = "niam@lab.internal"
+    }
+    "richard" = {
+      roles = ["platform-admin"]
+      email = "richard@lab.internal"
+    }
+
+    # Previously had: root-equivalent policy
+    "ej" = {
+      roles = ["platform-admin"]
+      email = "ej@lab.internal"
+    }
+
+    # Previously had: nandhapo (custom policy) — read-only pending role review
+    "nandha" = {
+      roles = ["read-only"]
+      email = "nandha@lab.internal"
+    }
+
+    # Previously had: jenkins policy (decommissioned) — reset to read-only
+    "joe" = {
+      roles = ["read-only"]
+      email = "joe@lab.internal"
+    }
+
+    # Previously had: no policies — read-only baseline
+    "air" = {
+      roles = ["read-only"]
+      email = "air@lab.internal"
+    }
+    "bob" = {
+      roles = ["read-only"]
+      email = "bob@lab.internal"
+    }
+    "jade" = {
+      roles = ["read-only"]
+      email = "jade@lab.internal"
+    }
+    "mac" = {
+      roles = ["read-only"]
+      email = "mac@lab.internal"
+    }
+    "nice" = {
+      roles = ["read-only"]
+      email = "nice@lab.internal"
+    }
+    "nick" = {
+      roles = ["read-only"]
+      email = "nick@lab.internal"
+    }
+    "sebastin" = {
+      roles = ["read-only"]
+      email = "sebastin@lab.internal"
+    }
+
   }
 }

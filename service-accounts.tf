@@ -67,5 +67,28 @@ locals {
       token_max_ttl = 28800
     }
 
+    # ── Imported — previously unmanaged AppRole accounts ──
+    "ansible-approle" = {
+      roles         = ["deployer"]
+      description   = "Ansible automation — deploys to lab systems"
+      token_ttl     = 3600
+      token_max_ttl = 14400
+    }
+
+    "espch-approle" = {
+      roles         = ["read-only"]
+      description   = "ESPCH service account"
+      token_ttl     = 3600
+      token_max_ttl = 14400
+    }
+
+    # Previously had policy1/policy2 (placeholder policies) — vault-admin for Terraform automation
+    "terraform" = {
+      roles         = ["vault-admin"]
+      description   = "Terraform service account for vault-access-control automation"
+      token_ttl     = 3600
+      token_max_ttl = 86400
+    }
+
   }
 }
