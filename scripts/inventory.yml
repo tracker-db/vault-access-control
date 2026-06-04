@@ -18,10 +18,17 @@
 bastions:
   hosts:
     bastion2:
-      ansible_connection: local
+      ansible_host: ssh.auto-deploy.net
+      ansible_user: ej
+      ansible_become: true
+      ansible_become_method: sudo
+      ansible_ssh_private_key_file: ~/.ssh/user51
     bastion0:
       ansible_host: 192.168.2.100
-      ansible_user: root
+      ansible_user: ej
+      ansible_become: true
+      ansible_become_method: sudo
+      ansible_ssh_private_key_file: ~/.ssh/user51
 
 anydesk:
   hosts:
