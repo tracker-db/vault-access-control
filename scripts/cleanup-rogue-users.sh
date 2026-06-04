@@ -41,15 +41,17 @@ skipped() { echo -e "  ${YELLOW}–  SKIP${NC}     $1  (not found on this server
 would()   { echo -e "  ${YELLOW}→  WOULD DELETE${NC}  $1"; }
 
 delete_user_on_server() {
-    local server_ssh="$1"
+    local target="$1"   # SSH target (e.g. ssh.auto-deploy.net or 192.168.2.100)
     local user="$2"
 
-    exists=$(eval "$server_ssh 'id ${user} &>/dev/null && echo yes || echo no'" 2>/dev/null || echo "no")
+    exists=$(ssh -o StrictHostKeyChecking=no -o ConnectTimeout=10 "$target" \
+        "id ${user} &>/dev/null && echo yes || echo no" 2>/dev/null || echo "no")
 
     if [ "$exists" = "yes" ]; then
         if $APPLY; then
-            eval "$server_ssh 'pkill -u ${user} 2>/dev/null || true; userdel -rf ${user} 2>/dev/null || true'" 2>/dev/null
-            deleted "$user"
+            ssh -o StrictHostKeyChecking=no -o ConnectTimeout=10 "$target" \
+                "sudo pkill -u ${user} 2>/dev/null; sudo userdel -rf ${user}" 2>/dev/null && \
+                deleted "$user" || deleted "$user (check manually)"
         else
             would "$user"
         fi
@@ -72,13 +74,13 @@ printf '═%.0s' {1..55}; echo
 # ── bastion2 ─────────────────────────────────────────────
 header "bastion2  (ssh.auto-deploy.net)"
 for user in "${ROGUE_USERS[@]}"; do
-    delete_user_on_server "ssh -o StrictHostKeyChecking=no ssh.auto-deploy.net sudo" "$user"
+    delete_user_on_server "ssh.auto-deploy.net" "$user"
 done
 
 # ── bastion0 ─────────────────────────────────────────────
 header "bastion0  (192.168.2.100)"
 for user in "${ROGUE_USERS[@]}"; do
-    delete_user_on_server "ssh -o StrictHostKeyChecking=no 192.168.2.100 sudo" "$user"
+    delete_user_on_server "192.168.2.100" "$user"
 done
 
 # ── blue-anydesk ─────────────────────────────────────────
