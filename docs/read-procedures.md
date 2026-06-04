@@ -80,13 +80,53 @@ vault write auth/userpass/users/<name> password=<new>
 
 ---
 
-## SSH Certificates
+## SSH Keys and Certificates
 
-### Sign SSH key / connect
+### How this works — no key distribution needed
+
+Servers trust Vault's CA certificate, not your personal SSH key.
+Each device has its own key pair. Each gets a signed certificate from Vault.
+**Changing a key on one device never affects any other device or any server.**
+
+### Daily use — sign your key and connect
 ```bash
-scripts/engineer-ssh-login.sh       # sign key — valid 8h (platform-admin) or 4h (operator)
-ssh -i ~/.ssh/user51 <hostname>
+scripts/engineer-ssh-login.sh       # authenticates to Vault, signs key, saves cert
+ssh -i ~/.ssh/user51 <hostname>     # cert is picked up automatically alongside the key
+# Certificates expire: 8h (platform-admin), 4h (operator)
 ```
+
+### Rotate SSH key on a device
+```bash
+ssh-keygen -t ed25519 -f ~/.ssh/user51   # generate new key pair
+scripts/engineer-ssh-login.sh            # sign new key with Vault — done
+```
+No server changes needed. No key distribution. The old cert expires on its own.
+
+### Set up SSH on a new computer
+```bash
+ssh-keygen -t ed25519 -f ~/.ssh/user51   # generate key pair on the new machine
+# Set VAULT_ADDR=https://vault.nextresearch.io
+vault login -method=userpass username=<name>
+scripts/engineer-ssh-login.sh            # sign key, cert saved to ~/.ssh/user51-cert.pub
+ssh -i ~/.ssh/user51 <hostname>          # works immediately
+```
+
+### Set up SSH on a phone / SSH app
+Each SSH app manages its own keys. Vault signs any public key you submit.
+
+1. In your SSH app — generate a key pair and export the public key
+2. On any computer with Vault access:
+```bash
+vault login -method=userpass username=<name>
+vault write -field=signed_key ssh/sign/ssh-bastion \
+  public_key="<paste phone public key here>" \
+  > phone-cert.pub
+```
+3. Import `phone-cert.pub` back into the SSH app alongside the private key
+4. Cert expires in 8h — repeat to renew
+
+> The phone key never leaves the phone. Vault signs it without seeing the private key.
+> If the phone is lost — the cert expires on its own. No key rotation needed anywhere else.
 
 ---
 
