@@ -38,13 +38,7 @@ terraform {
 }
 
 provider "vault" {
-  address = var.vault_addr
-}
-
-variable "vault_addr" {
-  description = "Vault primary/anchor address"
-  type        = string
-  default     = "https://vault.lab.internal:8200"
+  address = "https://vault.nextresearch.io"
 }
 
 variable "ssh_mount_path" {

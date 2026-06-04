@@ -1,0 +1,3507 @@
+{
+  "version": 4,
+  "terraform_version": "1.11.2",
+  "serial": 474,
+  "lineage": "67b8fdd8-1835-0a72-2ed8-ae8f4ef59bb3",
+  "outputs": {
+    "principals_summary": {
+      "value": {
+        "ssh.auto-deploy.net:1020": {
+          "deploy": [
+            "bastion"
+          ],
+          "root": [
+            "bastion"
+          ]
+        },
+        "ssh.auto-deploy.net:1022": {
+          "deploy": [
+            "bastion"
+          ],
+          "root": [
+            "bastion"
+          ]
+        }
+      },
+      "type": [
+        "object",
+        {
+          "ssh.auto-deploy.net:1020": [
+            "object",
+            {
+              "deploy": [
+                "list",
+                "string"
+              ],
+              "root": [
+                "list",
+                "string"
+              ]
+            }
+          ],
+          "ssh.auto-deploy.net:1022": [
+            "object",
+            {
+              "deploy": [
+                "list",
+                "string"
+              ],
+              "root": [
+                "list",
+                "string"
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    "service_account_matrix": {
+      "value": {
+        "ansible-approle": {
+          "description": "Ansible automation — deploys to lab systems",
+          "policies": [
+            "ssh-role-deployer",
+            "kv-read-deployer"
+          ],
+          "roles": [
+            "deployer"
+          ]
+        },
+        "app-service": {
+          "description": "Shared service account for internal lab systems (utility server, libvirt hosts, containers)",
+          "policies": [
+            "ssh-role-deployer",
+            "kv-read-deployer"
+          ],
+          "roles": [
+            "deployer"
+          ]
+        },
+        "espch-approle": {
+          "description": "ESPCH service account",
+          "policies": [
+            "ssh-role-read-only"
+          ],
+          "roles": [
+            "read-only"
+          ]
+        },
+        "github-actions-runner": {
+          "description": "GitHub Actions self-hosted runner on build server",
+          "policies": [
+            "ssh-role-deployer",
+            "kv-read-deployer"
+          ],
+          "roles": [
+            "deployer"
+          ]
+        },
+        "svc-anydesk-blue": {
+          "description": "AnyDesk Blue server — reads credentials from Vault KV",
+          "policies": [
+            "ssh-role-read-only"
+          ],
+          "roles": [
+            "read-only"
+          ]
+        },
+        "svc-anydesk-green": {
+          "description": "AnyDesk Green server — reads credentials from Vault KV",
+          "policies": [
+            "ssh-role-read-only"
+          ],
+          "roles": [
+            "read-only"
+          ]
+        },
+        "svc-bastion": {
+          "description": "Bastion server — manages SSH CA operations and credential relay",
+          "policies": [
+            "ssh-role-deployer",
+            "kv-read-deployer"
+          ],
+          "roles": [
+            "deployer"
+          ]
+        },
+        "terraform": {
+          "description": "Terraform service account for vault-access-control automation",
+          "policies": [
+            "ssh-role-vault-admin"
+          ],
+          "roles": [
+            "vault-admin"
+          ]
+        },
+        "vault-agent-blue": {
+          "description": "Vault agent sidecar on Blue K8s cluster",
+          "policies": [
+            "ssh-role-read-only"
+          ],
+          "roles": [
+            "read-only"
+          ]
+        },
+        "vault-agent-green": {
+          "description": "Vault agent sidecar on Green K8s cluster",
+          "policies": [
+            "ssh-role-read-only"
+          ],
+          "roles": [
+            "read-only"
+          ]
+        }
+      },
+      "type": [
+        "object",
+        {
+          "ansible-approle": [
+            "object",
+            {
+              "description": "string",
+              "policies": [
+                "tuple",
+                [
+                  "string",
+                  "string"
+                ]
+              ],
+              "roles": [
+                "tuple",
+                [
+                  "string"
+                ]
+              ]
+            }
+          ],
+          "app-service": [
+            "object",
+            {
+              "description": "string",
+              "policies": [
+                "tuple",
+                [
+                  "string",
+                  "string"
+                ]
+              ],
+              "roles": [
+                "tuple",
+                [
+                  "string"
+                ]
+              ]
+            }
+          ],
+          "espch-approle": [
+            "object",
+            {
+              "description": "string",
+              "policies": [
+                "tuple",
+                [
+                  "string"
+                ]
+              ],
+              "roles": [
+                "tuple",
+                [
+                  "string"
+                ]
+              ]
+            }
+          ],
+          "github-actions-runner": [
+            "object",
+            {
+              "description": "string",
+              "policies": [
+                "tuple",
+                [
+                  "string",
+                  "string"
+                ]
+              ],
+              "roles": [
+                "tuple",
+                [
+                  "string"
+                ]
+              ]
+            }
+          ],
+          "svc-anydesk-blue": [
+            "object",
+            {
+              "description": "string",
+              "policies": [
+                "tuple",
+                [
+                  "string"
+                ]
+              ],
+              "roles": [
+                "tuple",
+                [
+                  "string"
+                ]
+              ]
+            }
+          ],
+          "svc-anydesk-green": [
+            "object",
+            {
+              "description": "string",
+              "policies": [
+                "tuple",
+                [
+                  "string"
+                ]
+              ],
+              "roles": [
+                "tuple",
+                [
+                  "string"
+                ]
+              ]
+            }
+          ],
+          "svc-bastion": [
+            "object",
+            {
+              "description": "string",
+              "policies": [
+                "tuple",
+                [
+                  "string",
+                  "string"
+                ]
+              ],
+              "roles": [
+                "tuple",
+                [
+                  "string"
+                ]
+              ]
+            }
+          ],
+          "terraform": [
+            "object",
+            {
+              "description": "string",
+              "policies": [
+                "tuple",
+                [
+                  "string"
+                ]
+              ],
+              "roles": [
+                "tuple",
+                [
+                  "string"
+                ]
+              ]
+            }
+          ],
+          "vault-agent-blue": [
+            "object",
+            {
+              "description": "string",
+              "policies": [
+                "tuple",
+                [
+                  "string"
+                ]
+              ],
+              "roles": [
+                "tuple",
+                [
+                  "string"
+                ]
+              ]
+            }
+          ],
+          "vault-agent-green": [
+            "object",
+            {
+              "description": "string",
+              "policies": [
+                "tuple",
+                [
+                  "string"
+                ]
+              ],
+              "roles": [
+                "tuple",
+                [
+                  "string"
+                ]
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    "user_access_matrix": {
+      "value": {
+        "desmond": {
+          "policies": [
+            "ssh-role-platform-admin",
+            "vault-admin",
+            "kv-admin",
+            "aws-access",
+            "kv-read-platform-admin"
+          ],
+          "roles": [
+            "platform-admin"
+          ]
+        },
+        "ej": {
+          "policies": [
+            "ssh-role-platform-admin",
+            "vault-admin",
+            "kv-admin",
+            "aws-access",
+            "kv-read-platform-admin",
+            "root-equivalent"
+          ],
+          "roles": [
+            "platform-admin"
+          ]
+        },
+        "ejbest": {
+          "policies": [
+            "ssh-role-platform-admin",
+            "vault-admin",
+            "kv-admin",
+            "aws-access",
+            "kv-read-platform-admin"
+          ],
+          "roles": [
+            "platform-admin"
+          ]
+        },
+        "fawaz": {
+          "policies": [
+            "ssh-role-platform-admin",
+            "vault-admin",
+            "kv-admin",
+            "aws-access",
+            "kv-read-platform-admin"
+          ],
+          "roles": [
+            "platform-admin"
+          ]
+        }
+      },
+      "type": [
+        "object",
+        {
+          "desmond": [
+            "object",
+            {
+              "policies": [
+                "tuple",
+                [
+                  "string",
+                  "string",
+                  "string",
+                  "string",
+                  "string"
+                ]
+              ],
+              "roles": [
+                "tuple",
+                [
+                  "string"
+                ]
+              ]
+            }
+          ],
+          "ej": [
+            "object",
+            {
+              "policies": [
+                "tuple",
+                [
+                  "string",
+                  "string",
+                  "string",
+                  "string",
+                  "string",
+                  "string"
+                ]
+              ],
+              "roles": [
+                "tuple",
+                [
+                  "string"
+                ]
+              ]
+            }
+          ],
+          "ejbest": [
+            "object",
+            {
+              "policies": [
+                "tuple",
+                [
+                  "string",
+                  "string",
+                  "string",
+                  "string",
+                  "string"
+                ]
+              ],
+              "roles": [
+                "tuple",
+                [
+                  "string"
+                ]
+              ]
+            }
+          ],
+          "fawaz": [
+            "object",
+            {
+              "policies": [
+                "tuple",
+                [
+                  "string",
+                  "string",
+                  "string",
+                  "string",
+                  "string"
+                ]
+              ],
+              "roles": [
+                "tuple",
+                [
+                  "string"
+                ]
+              ]
+            }
+          ]
+        }
+      ]
+    }
+  },
+  "resources": [
+    {
+      "mode": "managed",
+      "type": "local_file",
+      "name": "ansible_users",
+      "provider": "provider[\"registry.terraform.io/hashicorp/local\"]",
+      "instances": [
+        {
+          "schema_version": 0,
+          "attributes": {
+            "content": "\"core_service_accounts\":\n  \"app-service\":\n    \"status\": \"enabled\"\n\"service_accounts\":\n  \"ansible-job-user\":\n    \"status\": \"enabled\"\n  \"ansible-work\":\n    \"status\": \"enabled\"\n  \"ansible-work-service-account\":\n    \"status\": \"enabled\"\n  \"auto-deploy\":\n    \"status\": \"enabled\"\n\"vault_users\":\n  \"desmond\":\n    \"status\": \"enabled\"\n  \"ej\":\n    \"status\": \"enabled\"\n  \"ejbest\":\n    \"status\": \"enabled\"\n  \"fawaz\":\n    \"status\": \"enabled\"\n",
+            "content_base64": null,
+            "content_base64sha256": "NWlx692VTE5a9r3wUqFB6q5B64s6md/G1OYzAz4Vgvo=",
+            "content_base64sha512": "OCdWeKOZ4aqjm8a+XRFDC7mr1bK4teIkb/L4a5zaBwixYCtzcu3P2Ri3/R5jtT2nuKzsJZ7Jxct46XwrPHqOfA==",
+            "content_md5": "b996ca53498e5b6349d226e62a273b91",
+            "content_sha1": "13bcc7329627133c10c8190c28ccf0bb400f2f5f",
+            "content_sha256": "356971ebdd954c4e5af6bdf052a141eaae41eb8b3a99dfc6d4e633033e1582fa",
+            "content_sha512": "38275678a399e1aaa39bc6be5d11430bb9abd5b2b8b5e2246ff2f86b9cda0708b1602b7372edcfd918b7fd1e63b53da7b8acec259ec9c5cb78e97c2b3c7a8e7c",
+            "directory_permission": "0777",
+            "file_permission": "0644",
+            "filename": "./scripts/users.auto.yml",
+            "id": "13bcc7329627133c10c8190c28ccf0bb400f2f5f",
+            "sensitive_content": null,
+            "source": null
+          },
+          "sensitive_attributes": [
+            [
+              {
+                "type": "get_attr",
+                "value": "sensitive_content"
+              }
+            ]
+          ]
+        }
+      ]
+    },
+    {
+      "mode": "managed",
+      "type": "local_file",
+      "name": "principals_deploy",
+      "provider": "provider[\"registry.terraform.io/hashicorp/local\"]",
+      "instances": [
+        {
+          "index_key": "ssh.auto-deploy.net:1020",
+          "schema_version": 0,
+          "attributes": {
+            "content": "bastion",
+            "content_base64": null,
+            "content_base64sha256": "ocUJ3yHOxJr2aFq449utYN/LA3zAqzsLUsYS8q5uzKQ=",
+            "content_base64sha512": "8s/qnXKxA+weXmYJEQVk32iM3juFunJU7LjKQJ13LPsZWtJMbQ2Cs60qYAaubuP02mLEBugAcvkB+/lvHwTc6A==",
+            "content_md5": "cb8db1f49337e4a9fc660e68dd5fd3f1",
+            "content_sha1": "590b5d9e4748aee258526763486e17593096ff34",
+            "content_sha256": "a1c509df21cec49af6685ab8e3dbad60dfcb037cc0ab3b0b52c612f2ae6ecca4",
+            "content_sha512": "f2cfea9d72b103ec1e5e6609110564df688cde3b85ba7254ecb8ca409d772cfb195ad24c6d0d82b3ad2a6006ae6ee3f4da62c406e80072f901fbf96f1f04dce8",
+            "directory_permission": "0777",
+            "file_permission": "0777",
+            "filename": "./principals.d/ssh.auto-deploy.net:1020/deploy",
+            "id": "590b5d9e4748aee258526763486e17593096ff34",
+            "sensitive_content": null,
+            "source": null
+          },
+          "sensitive_attributes": [
+            [
+              {
+                "type": "get_attr",
+                "value": "sensitive_content"
+              }
+            ]
+          ]
+        },
+        {
+          "index_key": "ssh.auto-deploy.net:1022",
+          "schema_version": 0,
+          "attributes": {
+            "content": "bastion",
+            "content_base64": null,
+            "content_base64sha256": "ocUJ3yHOxJr2aFq449utYN/LA3zAqzsLUsYS8q5uzKQ=",
+            "content_base64sha512": "8s/qnXKxA+weXmYJEQVk32iM3juFunJU7LjKQJ13LPsZWtJMbQ2Cs60qYAaubuP02mLEBugAcvkB+/lvHwTc6A==",
+            "content_md5": "cb8db1f49337e4a9fc660e68dd5fd3f1",
+            "content_sha1": "590b5d9e4748aee258526763486e17593096ff34",
+            "content_sha256": "a1c509df21cec49af6685ab8e3dbad60dfcb037cc0ab3b0b52c612f2ae6ecca4",
+            "content_sha512": "f2cfea9d72b103ec1e5e6609110564df688cde3b85ba7254ecb8ca409d772cfb195ad24c6d0d82b3ad2a6006ae6ee3f4da62c406e80072f901fbf96f1f04dce8",
+            "directory_permission": "0777",
+            "file_permission": "0777",
+            "filename": "./principals.d/ssh.auto-deploy.net:1022/deploy",
+            "id": "590b5d9e4748aee258526763486e17593096ff34",
+            "sensitive_content": null,
+            "source": null
+          },
+          "sensitive_attributes": [
+            [
+              {
+                "type": "get_attr",
+                "value": "sensitive_content"
+              }
+            ]
+          ]
+        }
+      ]
+    },
+    {
+      "mode": "managed",
+      "type": "local_file",
+      "name": "principals_root",
+      "provider": "provider[\"registry.terraform.io/hashicorp/local\"]",
+      "instances": [
+        {
+          "index_key": "ssh.auto-deploy.net:1020",
+          "schema_version": 0,
+          "attributes": {
+            "content": "bastion",
+            "content_base64": null,
+            "content_base64sha256": "ocUJ3yHOxJr2aFq449utYN/LA3zAqzsLUsYS8q5uzKQ=",
+            "content_base64sha512": "8s/qnXKxA+weXmYJEQVk32iM3juFunJU7LjKQJ13LPsZWtJMbQ2Cs60qYAaubuP02mLEBugAcvkB+/lvHwTc6A==",
+            "content_md5": "cb8db1f49337e4a9fc660e68dd5fd3f1",
+            "content_sha1": "590b5d9e4748aee258526763486e17593096ff34",
+            "content_sha256": "a1c509df21cec49af6685ab8e3dbad60dfcb037cc0ab3b0b52c612f2ae6ecca4",
+            "content_sha512": "f2cfea9d72b103ec1e5e6609110564df688cde3b85ba7254ecb8ca409d772cfb195ad24c6d0d82b3ad2a6006ae6ee3f4da62c406e80072f901fbf96f1f04dce8",
+            "directory_permission": "0777",
+            "file_permission": "0777",
+            "filename": "./principals.d/ssh.auto-deploy.net:1020/root",
+            "id": "590b5d9e4748aee258526763486e17593096ff34",
+            "sensitive_content": null,
+            "source": null
+          },
+          "sensitive_attributes": [
+            [
+              {
+                "type": "get_attr",
+                "value": "sensitive_content"
+              }
+            ]
+          ]
+        },
+        {
+          "index_key": "ssh.auto-deploy.net:1022",
+          "schema_version": 0,
+          "attributes": {
+            "content": "bastion",
+            "content_base64": null,
+            "content_base64sha256": "ocUJ3yHOxJr2aFq449utYN/LA3zAqzsLUsYS8q5uzKQ=",
+            "content_base64sha512": "8s/qnXKxA+weXmYJEQVk32iM3juFunJU7LjKQJ13LPsZWtJMbQ2Cs60qYAaubuP02mLEBugAcvkB+/lvHwTc6A==",
+            "content_md5": "cb8db1f49337e4a9fc660e68dd5fd3f1",
+            "content_sha1": "590b5d9e4748aee258526763486e17593096ff34",
+            "content_sha256": "a1c509df21cec49af6685ab8e3dbad60dfcb037cc0ab3b0b52c612f2ae6ecca4",
+            "content_sha512": "f2cfea9d72b103ec1e5e6609110564df688cde3b85ba7254ecb8ca409d772cfb195ad24c6d0d82b3ad2a6006ae6ee3f4da62c406e80072f901fbf96f1f04dce8",
+            "directory_permission": "0777",
+            "file_permission": "0777",
+            "filename": "./principals.d/ssh.auto-deploy.net:1022/root",
+            "id": "590b5d9e4748aee258526763486e17593096ff34",
+            "sensitive_content": null,
+            "source": null
+          },
+          "sensitive_attributes": [
+            [
+              {
+                "type": "get_attr",
+                "value": "sensitive_content"
+              }
+            ]
+          ]
+        }
+      ]
+    },
+    {
+      "mode": "managed",
+      "type": "null_resource",
+      "name": "copy_manifest_to_bastion2",
+      "provider": "provider[\"registry.terraform.io/hashicorp/null\"]",
+      "instances": [
+        {
+          "schema_version": 0,
+          "attributes": {
+            "id": "1239796450809747796",
+            "triggers": {
+              "manifest_hash": "13bcc7329627133c10c8190c28ccf0bb400f2f5f"
+            }
+          },
+          "sensitive_attributes": [],
+          "dependencies": [
+            "local_file.ansible_users"
+          ]
+        }
+      ]
+    },
+    {
+      "mode": "managed",
+      "type": "vault_approle_auth_backend_role",
+      "name": "service_accounts",
+      "provider": "provider[\"registry.terraform.io/hashicorp/vault\"]",
+      "instances": [
+        {
+          "index_key": "ansible-approle",
+          "schema_version": 0,
+          "attributes": {
+            "backend": "approle",
+            "bind_secret_id": true,
+            "id": "auth/approle/role/ansible-approle",
+            "namespace": null,
+            "role_id": "f127c2a0-9fc0-6dca-eb3d-f71c6739fc40",
+            "role_name": "ansible-approle",
+            "secret_id_bound_cidrs": [],
+            "secret_id_num_uses": 0,
+            "secret_id_ttl": 0,
+            "token_bound_cidrs": [],
+            "token_explicit_max_ttl": 0,
+            "token_max_ttl": 14400,
+            "token_no_default_policy": false,
+            "token_num_uses": 0,
+            "token_period": 0,
+            "token_policies": [
+              "kv-read-deployer",
+              "ssh-role-deployer"
+            ],
+            "token_ttl": 3600,
+            "token_type": "default"
+          },
+          "sensitive_attributes": [],
+          "private": "bnVsbA==",
+          "dependencies": [
+            "module.vault_rbac.vault_policy.roles",
+            "vault_auth_backend.approle"
+          ]
+        },
+        {
+          "index_key": "app-service",
+          "schema_version": 0,
+          "attributes": {
+            "backend": "approle",
+            "bind_secret_id": true,
+            "id": "auth/approle/role/app-service",
+            "namespace": null,
+            "role_id": "e783615a-1081-bc3f-c19d-7acb9b2275f5",
+            "role_name": "app-service",
+            "secret_id_bound_cidrs": [],
+            "secret_id_num_uses": 0,
+            "secret_id_ttl": 0,
+            "token_bound_cidrs": [],
+            "token_explicit_max_ttl": 0,
+            "token_max_ttl": 28800,
+            "token_no_default_policy": false,
+            "token_num_uses": 0,
+            "token_period": 0,
+            "token_policies": [
+              "kv-read-deployer",
+              "ssh-role-deployer"
+            ],
+            "token_ttl": 14400,
+            "token_type": "default"
+          },
+          "sensitive_attributes": [],
+          "private": "bnVsbA==",
+          "dependencies": [
+            "module.vault_rbac.vault_policy.roles",
+            "vault_auth_backend.approle"
+          ]
+        },
+        {
+          "index_key": "espch-approle",
+          "schema_version": 0,
+          "attributes": {
+            "backend": "approle",
+            "bind_secret_id": true,
+            "id": "auth/approle/role/espch-approle",
+            "namespace": null,
+            "role_id": "9346011c-7fae-b33c-e715-2aa19475f497",
+            "role_name": "espch-approle",
+            "secret_id_bound_cidrs": [],
+            "secret_id_num_uses": 0,
+            "secret_id_ttl": 0,
+            "token_bound_cidrs": [],
+            "token_explicit_max_ttl": 0,
+            "token_max_ttl": 14400,
+            "token_no_default_policy": false,
+            "token_num_uses": 0,
+            "token_period": 0,
+            "token_policies": [
+              "ssh-role-read-only"
+            ],
+            "token_ttl": 3600,
+            "token_type": "default"
+          },
+          "sensitive_attributes": [],
+          "private": "bnVsbA==",
+          "dependencies": [
+            "module.vault_rbac.vault_policy.roles",
+            "vault_auth_backend.approle"
+          ]
+        },
+        {
+          "index_key": "github-actions-runner",
+          "schema_version": 0,
+          "attributes": {
+            "backend": "approle",
+            "bind_secret_id": true,
+            "id": "auth/approle/role/github-actions-runner",
+            "namespace": null,
+            "role_id": "756a58e6-76e0-dca2-60ae-e4f4da14917e",
+            "role_name": "github-actions-runner",
+            "secret_id_bound_cidrs": [],
+            "secret_id_num_uses": 0,
+            "secret_id_ttl": 0,
+            "token_bound_cidrs": [],
+            "token_explicit_max_ttl": 0,
+            "token_max_ttl": 3600,
+            "token_no_default_policy": false,
+            "token_num_uses": 0,
+            "token_period": 0,
+            "token_policies": [
+              "kv-read-deployer",
+              "ssh-role-deployer"
+            ],
+            "token_ttl": 1800,
+            "token_type": "default"
+          },
+          "sensitive_attributes": [],
+          "private": "bnVsbA==",
+          "dependencies": [
+            "module.vault_rbac.vault_policy.roles",
+            "vault_auth_backend.approle"
+          ]
+        },
+        {
+          "index_key": "svc-anydesk-blue",
+          "schema_version": 0,
+          "attributes": {
+            "backend": "approle",
+            "bind_secret_id": true,
+            "id": "auth/approle/role/svc-anydesk-blue",
+            "namespace": null,
+            "role_id": "de66f552-b3ea-fd5c-2d20-2bb69a6fff43",
+            "role_name": "svc-anydesk-blue",
+            "secret_id_bound_cidrs": [],
+            "secret_id_num_uses": 0,
+            "secret_id_ttl": 0,
+            "token_bound_cidrs": [],
+            "token_explicit_max_ttl": 0,
+            "token_max_ttl": 28800,
+            "token_no_default_policy": false,
+            "token_num_uses": 0,
+            "token_period": 0,
+            "token_policies": [
+              "ssh-role-read-only"
+            ],
+            "token_ttl": 14400,
+            "token_type": "default"
+          },
+          "sensitive_attributes": [],
+          "private": "bnVsbA==",
+          "dependencies": [
+            "module.vault_rbac.vault_policy.roles",
+            "vault_auth_backend.approle"
+          ]
+        },
+        {
+          "index_key": "svc-anydesk-green",
+          "schema_version": 0,
+          "attributes": {
+            "backend": "approle",
+            "bind_secret_id": true,
+            "id": "auth/approle/role/svc-anydesk-green",
+            "namespace": null,
+            "role_id": "c68cb100-53e4-e634-dd8a-a31fd8d4bbf6",
+            "role_name": "svc-anydesk-green",
+            "secret_id_bound_cidrs": [],
+            "secret_id_num_uses": 0,
+            "secret_id_ttl": 0,
+            "token_bound_cidrs": [],
+            "token_explicit_max_ttl": 0,
+            "token_max_ttl": 28800,
+            "token_no_default_policy": false,
+            "token_num_uses": 0,
+            "token_period": 0,
+            "token_policies": [
+              "ssh-role-read-only"
+            ],
+            "token_ttl": 14400,
+            "token_type": "default"
+          },
+          "sensitive_attributes": [],
+          "private": "bnVsbA==",
+          "dependencies": [
+            "module.vault_rbac.vault_policy.roles",
+            "vault_auth_backend.approle"
+          ]
+        },
+        {
+          "index_key": "svc-bastion",
+          "schema_version": 0,
+          "attributes": {
+            "backend": "approle",
+            "bind_secret_id": true,
+            "id": "auth/approle/role/svc-bastion",
+            "namespace": null,
+            "role_id": "2172f8a9-4dbe-17f6-1ac0-cf007fc0e0f7",
+            "role_name": "svc-bastion",
+            "secret_id_bound_cidrs": [],
+            "secret_id_num_uses": 0,
+            "secret_id_ttl": 0,
+            "token_bound_cidrs": [],
+            "token_explicit_max_ttl": 0,
+            "token_max_ttl": 28800,
+            "token_no_default_policy": false,
+            "token_num_uses": 0,
+            "token_period": 0,
+            "token_policies": [
+              "kv-read-deployer",
+              "ssh-role-deployer"
+            ],
+            "token_ttl": 14400,
+            "token_type": "default"
+          },
+          "sensitive_attributes": [],
+          "private": "bnVsbA==",
+          "dependencies": [
+            "module.vault_rbac.vault_policy.roles",
+            "vault_auth_backend.approle"
+          ]
+        },
+        {
+          "index_key": "terraform",
+          "schema_version": 0,
+          "attributes": {
+            "backend": "approle",
+            "bind_secret_id": true,
+            "id": "auth/approle/role/terraform",
+            "namespace": null,
+            "role_id": "ecbe42db-fbc8-3dda-dc08-55c490c92bd5",
+            "role_name": "terraform",
+            "secret_id_bound_cidrs": [],
+            "secret_id_num_uses": 0,
+            "secret_id_ttl": 0,
+            "token_bound_cidrs": [],
+            "token_explicit_max_ttl": 0,
+            "token_max_ttl": 86400,
+            "token_no_default_policy": false,
+            "token_num_uses": 0,
+            "token_period": 0,
+            "token_policies": [
+              "ssh-role-vault-admin"
+            ],
+            "token_ttl": 3600,
+            "token_type": "default"
+          },
+          "sensitive_attributes": [],
+          "private": "bnVsbA==",
+          "dependencies": [
+            "module.vault_rbac.vault_policy.roles",
+            "vault_auth_backend.approle"
+          ]
+        },
+        {
+          "index_key": "vault-agent-blue",
+          "schema_version": 0,
+          "attributes": {
+            "backend": "approle",
+            "bind_secret_id": true,
+            "id": "auth/approle/role/vault-agent-blue",
+            "namespace": null,
+            "role_id": "1bcc4df3-1aa1-53c2-943b-78c97578a763",
+            "role_name": "vault-agent-blue",
+            "secret_id_bound_cidrs": [],
+            "secret_id_num_uses": 0,
+            "secret_id_ttl": 0,
+            "token_bound_cidrs": [],
+            "token_explicit_max_ttl": 0,
+            "token_max_ttl": 28800,
+            "token_no_default_policy": false,
+            "token_num_uses": 0,
+            "token_period": 0,
+            "token_policies": [
+              "ssh-role-read-only"
+            ],
+            "token_ttl": 14400,
+            "token_type": "default"
+          },
+          "sensitive_attributes": [],
+          "private": "bnVsbA==",
+          "dependencies": [
+            "module.vault_rbac.vault_policy.roles",
+            "vault_auth_backend.approle"
+          ]
+        },
+        {
+          "index_key": "vault-agent-green",
+          "schema_version": 0,
+          "attributes": {
+            "backend": "approle",
+            "bind_secret_id": true,
+            "id": "auth/approle/role/vault-agent-green",
+            "namespace": null,
+            "role_id": "e3e51d19-8e61-153f-eb24-c072dd90dbb8",
+            "role_name": "vault-agent-green",
+            "secret_id_bound_cidrs": [],
+            "secret_id_num_uses": 0,
+            "secret_id_ttl": 0,
+            "token_bound_cidrs": [],
+            "token_explicit_max_ttl": 0,
+            "token_max_ttl": 28800,
+            "token_no_default_policy": false,
+            "token_num_uses": 0,
+            "token_period": 0,
+            "token_policies": [
+              "ssh-role-read-only"
+            ],
+            "token_ttl": 14400,
+            "token_type": "default"
+          },
+          "sensitive_attributes": [],
+          "private": "bnVsbA==",
+          "dependencies": [
+            "module.vault_rbac.vault_policy.roles",
+            "vault_auth_backend.approle"
+          ]
+        }
+      ]
+    },
+    {
+      "mode": "managed",
+      "type": "vault_auth_backend",
+      "name": "approle",
+      "provider": "provider[\"registry.terraform.io/hashicorp/vault\"]",
+      "instances": [
+        {
+          "schema_version": 1,
+          "attributes": {
+            "accessor": "auth_approle_112b24af",
+            "description": "",
+            "disable_remount": false,
+            "id": "approle",
+            "identity_token_key": null,
+            "local": false,
+            "namespace": null,
+            "path": "approle",
+            "tune": [],
+            "type": "approle"
+          },
+          "sensitive_attributes": [],
+          "private": "eyJzY2hlbWFfdmVyc2lvbiI6IjEifQ=="
+        }
+      ]
+    },
+    {
+      "mode": "managed",
+      "type": "vault_auth_backend",
+      "name": "cert",
+      "provider": "provider[\"registry.terraform.io/hashicorp/vault\"]",
+      "instances": [
+        {
+          "schema_version": 1,
+          "attributes": {
+            "accessor": "auth_cert_7b77d1c1",
+            "description": "",
+            "disable_remount": false,
+            "id": "cert",
+            "identity_token_key": null,
+            "local": false,
+            "namespace": null,
+            "path": "cert",
+            "tune": [],
+            "type": "cert"
+          },
+          "sensitive_attributes": [],
+          "private": "eyJzY2hlbWFfdmVyc2lvbiI6IjEifQ=="
+        }
+      ]
+    },
+    {
+      "mode": "managed",
+      "type": "vault_auth_backend",
+      "name": "certs",
+      "provider": "provider[\"registry.terraform.io/hashicorp/vault\"]",
+      "instances": [
+        {
+          "schema_version": 1,
+          "attributes": {
+            "accessor": "auth_cert_8e85282a",
+            "description": "",
+            "disable_remount": false,
+            "id": "certs",
+            "identity_token_key": null,
+            "local": false,
+            "namespace": null,
+            "path": "certs",
+            "tune": [],
+            "type": "cert"
+          },
+          "sensitive_attributes": [],
+          "private": "eyJzY2hlbWFfdmVyc2lvbiI6IjEifQ=="
+        }
+      ]
+    },
+    {
+      "mode": "managed",
+      "type": "vault_auth_backend",
+      "name": "gcp",
+      "provider": "provider[\"registry.terraform.io/hashicorp/vault\"]",
+      "instances": [
+        {
+          "schema_version": 1,
+          "attributes": {
+            "accessor": "auth_gcp_27aeacbc",
+            "description": "",
+            "disable_remount": false,
+            "id": "gcp",
+            "identity_token_key": null,
+            "local": false,
+            "namespace": null,
+            "path": "gcp",
+            "tune": [],
+            "type": "gcp"
+          },
+          "sensitive_attributes": [],
+          "private": "eyJzY2hlbWFfdmVyc2lvbiI6IjEifQ=="
+        }
+      ]
+    },
+    {
+      "mode": "managed",
+      "type": "vault_auth_backend",
+      "name": "jwt",
+      "provider": "provider[\"registry.terraform.io/hashicorp/vault\"]",
+      "instances": [
+        {
+          "schema_version": 1,
+          "attributes": {
+            "accessor": "auth_jwt_7d07ef46",
+            "description": "",
+            "disable_remount": false,
+            "id": "jwt",
+            "identity_token_key": null,
+            "local": false,
+            "namespace": null,
+            "path": "jwt",
+            "tune": [],
+            "type": "jwt"
+          },
+          "sensitive_attributes": [],
+          "private": "eyJzY2hlbWFfdmVyc2lvbiI6IjEifQ=="
+        }
+      ]
+    },
+    {
+      "mode": "managed",
+      "type": "vault_auth_backend",
+      "name": "oidc",
+      "provider": "provider[\"registry.terraform.io/hashicorp/vault\"]",
+      "instances": [
+        {
+          "schema_version": 1,
+          "attributes": {
+            "accessor": "auth_oidc_5b436cd8",
+            "description": "",
+            "disable_remount": false,
+            "id": "oidc",
+            "identity_token_key": null,
+            "local": false,
+            "namespace": null,
+            "path": "oidc",
+            "tune": [],
+            "type": "oidc"
+          },
+          "sensitive_attributes": [],
+          "private": "eyJzY2hlbWFfdmVyc2lvbiI6IjEifQ=="
+        }
+      ]
+    },
+    {
+      "mode": "managed",
+      "type": "vault_auth_backend",
+      "name": "okta",
+      "provider": "provider[\"registry.terraform.io/hashicorp/vault\"]",
+      "instances": [
+        {
+          "schema_version": 1,
+          "attributes": {
+            "accessor": "auth_okta_9675f278",
+            "description": "",
+            "disable_remount": false,
+            "id": "okta",
+            "identity_token_key": null,
+            "local": false,
+            "namespace": null,
+            "path": "okta",
+            "tune": [],
+            "type": "okta"
+          },
+          "sensitive_attributes": [],
+          "private": "eyJzY2hlbWFfdmVyc2lvbiI6IjEifQ=="
+        }
+      ]
+    },
+    {
+      "mode": "managed",
+      "type": "vault_auth_backend",
+      "name": "userpass",
+      "provider": "provider[\"registry.terraform.io/hashicorp/vault\"]",
+      "instances": [
+        {
+          "schema_version": 1,
+          "attributes": {
+            "accessor": "auth_userpass_6960ae8d",
+            "description": "",
+            "disable_remount": false,
+            "id": "userpass",
+            "identity_token_key": null,
+            "local": false,
+            "namespace": null,
+            "path": "userpass",
+            "tune": [],
+            "type": "userpass"
+          },
+          "sensitive_attributes": [],
+          "private": "eyJzY2hlbWFfdmVyc2lvbiI6IjEifQ=="
+        }
+      ]
+    },
+    {
+      "mode": "managed",
+      "type": "vault_generic_endpoint",
+      "name": "users",
+      "provider": "provider[\"registry.terraform.io/hashicorp/vault\"]",
+      "instances": [
+        {
+          "index_key": "desmond",
+          "schema_version": 1,
+          "attributes": {
+            "data_json": "{\"token_max_ttl\":86400,\"token_policies\":[\"ssh-role-platform-admin\",\"vault-admin\",\"kv-admin\",\"aws-access\",\"kv-read-platform-admin\"],\"token_ttl\":28800}",
+            "disable_delete": false,
+            "disable_read": false,
+            "id": "auth/userpass/users/desmond",
+            "ignore_absent_fields": true,
+            "namespace": null,
+            "path": "auth/userpass/users/desmond",
+            "write_data": {},
+            "write_data_json": "null",
+            "write_fields": null
+          },
+          "sensitive_attributes": [
+            [
+              {
+                "type": "get_attr",
+                "value": "data_json"
+              }
+            ]
+          ],
+          "private": "eyJzY2hlbWFfdmVyc2lvbiI6IjEifQ==",
+          "dependencies": [
+            "module.vault_rbac.vault_policy.roles",
+            "vault_auth_backend.userpass"
+          ]
+        },
+        {
+          "index_key": "ej",
+          "schema_version": 1,
+          "attributes": {
+            "data_json": "{\"token_max_ttl\":86400,\"token_policies\":[\"ssh-role-platform-admin\",\"vault-admin\",\"kv-admin\",\"aws-access\",\"kv-read-platform-admin\",\"root-equivalent\"],\"token_ttl\":28800}",
+            "disable_delete": false,
+            "disable_read": false,
+            "id": "auth/userpass/users/ej",
+            "ignore_absent_fields": true,
+            "namespace": null,
+            "path": "auth/userpass/users/ej",
+            "write_data": {},
+            "write_data_json": "null",
+            "write_fields": null
+          },
+          "sensitive_attributes": [
+            [
+              {
+                "type": "get_attr",
+                "value": "data_json"
+              }
+            ]
+          ],
+          "private": "eyJzY2hlbWFfdmVyc2lvbiI6IjEifQ==",
+          "dependencies": [
+            "module.vault_rbac.vault_policy.roles",
+            "vault_auth_backend.userpass"
+          ]
+        },
+        {
+          "index_key": "ejbest",
+          "schema_version": 1,
+          "attributes": {
+            "data_json": "{\"token_max_ttl\":86400,\"token_policies\":[\"ssh-role-platform-admin\",\"vault-admin\",\"kv-admin\",\"aws-access\",\"kv-read-platform-admin\"],\"token_ttl\":28800}",
+            "disable_delete": false,
+            "disable_read": false,
+            "id": "auth/userpass/users/ejbest",
+            "ignore_absent_fields": true,
+            "namespace": null,
+            "path": "auth/userpass/users/ejbest",
+            "write_data": {},
+            "write_data_json": "null",
+            "write_fields": null
+          },
+          "sensitive_attributes": [
+            [
+              {
+                "type": "get_attr",
+                "value": "data_json"
+              }
+            ]
+          ],
+          "private": "eyJzY2hlbWFfdmVyc2lvbiI6IjEifQ==",
+          "dependencies": [
+            "module.vault_rbac.vault_policy.roles",
+            "vault_auth_backend.userpass"
+          ]
+        },
+        {
+          "index_key": "fawaz",
+          "schema_version": 1,
+          "attributes": {
+            "data_json": "{\"token_max_ttl\":86400,\"token_policies\":[\"ssh-role-platform-admin\",\"vault-admin\",\"kv-admin\",\"aws-access\",\"kv-read-platform-admin\"],\"token_ttl\":28800}",
+            "disable_delete": false,
+            "disable_read": false,
+            "id": "auth/userpass/users/fawaz",
+            "ignore_absent_fields": true,
+            "namespace": null,
+            "path": "auth/userpass/users/fawaz",
+            "write_data": {},
+            "write_data_json": "null",
+            "write_fields": null
+          },
+          "sensitive_attributes": [
+            [
+              {
+                "type": "get_attr",
+                "value": "data_json"
+              }
+            ]
+          ],
+          "private": "eyJzY2hlbWFfdmVyc2lvbiI6IjEifQ==",
+          "dependencies": [
+            "module.vault_rbac.vault_policy.roles",
+            "vault_auth_backend.userpass"
+          ]
+        }
+      ]
+    },
+    {
+      "mode": "managed",
+      "type": "vault_kv_secret_v2",
+      "name": "anydesk_server_1",
+      "provider": "provider[\"registry.terraform.io/hashicorp/vault\"]",
+      "instances": [
+        {
+          "schema_version": 0,
+          "attributes": {
+            "cas": null,
+            "custom_metadata": [
+              {
+                "cas_required": false,
+                "data": {},
+                "delete_version_after": 0,
+                "max_versions": 0
+              }
+            ],
+            "data": {
+              "anydesk_id": "1049863654",
+              "hostname": "anydesk-blue.lab.internal",
+              "notes": "Lab entry point — AnyDesk server 1",
+              "password": "88888888"
+            },
+            "data_json": "{\"anydesk_id\":\"1049863654\",\"hostname\":\"anydesk-blue.lab.internal\",\"notes\":\"Lab entry point — AnyDesk server 1\",\"password\":\"88888888\"}",
+            "delete_all_versions": false,
+            "disable_read": false,
+            "id": "secret/data/shared/anydesk/server-1",
+            "metadata": {
+              "created_time": "2026-06-03T15:28:29.741765484Z",
+              "custom_metadata": "null",
+              "deletion_time": "",
+              "destroyed": "false",
+              "version": "3"
+            },
+            "mount": "secret",
+            "name": "shared/anydesk/server-1",
+            "namespace": null,
+            "options": null,
+            "path": "secret/data/shared/anydesk/server-1"
+          },
+          "sensitive_attributes": [
+            [
+              {
+                "type": "get_attr",
+                "value": "data_json"
+              }
+            ],
+            [
+              {
+                "type": "get_attr",
+                "value": "data"
+              }
+            ]
+          ],
+          "private": "bnVsbA==",
+          "dependencies": [
+            "vault_mount.kv"
+          ]
+        }
+      ]
+    },
+    {
+      "mode": "managed",
+      "type": "vault_kv_secret_v2",
+      "name": "anydesk_server_2",
+      "provider": "provider[\"registry.terraform.io/hashicorp/vault\"]",
+      "instances": [
+        {
+          "schema_version": 0,
+          "attributes": {
+            "cas": null,
+            "custom_metadata": [
+              {
+                "cas_required": false,
+                "data": {},
+                "delete_version_after": 0,
+                "max_versions": 0
+              }
+            ],
+            "data": {
+              "anydesk_id": "1660634767",
+              "hostname": "anydesk-green.lab.internal",
+              "notes": "Lab entry point — AnyDesk server 2",
+              "password": "88888888"
+            },
+            "data_json": "{\"anydesk_id\":\"1660634767\",\"hostname\":\"anydesk-green.lab.internal\",\"notes\":\"Lab entry point — AnyDesk server 2\",\"password\":\"88888888\"}",
+            "delete_all_versions": false,
+            "disable_read": false,
+            "id": "secret/data/shared/anydesk/server-2",
+            "metadata": {
+              "created_time": "2026-06-03T15:28:29.635344043Z",
+              "custom_metadata": "null",
+              "deletion_time": "",
+              "destroyed": "false",
+              "version": "3"
+            },
+            "mount": "secret",
+            "name": "shared/anydesk/server-2",
+            "namespace": null,
+            "options": null,
+            "path": "secret/data/shared/anydesk/server-2"
+          },
+          "sensitive_attributes": [
+            [
+              {
+                "type": "get_attr",
+                "value": "data_json"
+              }
+            ],
+            [
+              {
+                "type": "get_attr",
+                "value": "data"
+              }
+            ]
+          ],
+          "private": "bnVsbA==",
+          "dependencies": [
+            "vault_mount.kv"
+          ]
+        }
+      ]
+    },
+    {
+      "mode": "managed",
+      "type": "vault_kv_secret_v2",
+      "name": "app_service",
+      "provider": "provider[\"registry.terraform.io/hashicorp/vault\"]",
+      "instances": [
+        {
+          "schema_version": 0,
+          "attributes": {
+            "cas": null,
+            "custom_metadata": [
+              {
+                "cas_required": false,
+                "data": {},
+                "delete_version_after": 0,
+                "max_versions": 0
+              }
+            ],
+            "data": {
+              "notes": "Shared service account for core-servers (util, green, blue)",
+              "password": "88888888",
+              "ssh_private_key": "",
+              "targets": "[\"util   — 192.168.2.97\",\"green  — 192.168.2.120\",\"blue   — 192.168.3.120\"]",
+              "username": "app-service"
+            },
+            "data_json": "{\"notes\":\"Shared service account for core-servers (util, green, blue)\",\"password\":\"88888888\",\"ssh_private_key\":\"\",\"targets\":[\"util   — 192.168.2.97\",\"green  — 192.168.2.120\",\"blue   — 192.168.3.120\"],\"username\":\"app-service\"}",
+            "delete_all_versions": false,
+            "disable_read": false,
+            "id": "secret/data/shared/app-service/credentials",
+            "metadata": {
+              "created_time": "2026-06-04T12:28:50.033889581Z",
+              "custom_metadata": "null",
+              "deletion_time": "",
+              "destroyed": "false",
+              "version": "3"
+            },
+            "mount": "secret",
+            "name": "shared/app-service/credentials",
+            "namespace": null,
+            "options": null,
+            "path": "secret/data/shared/app-service/credentials"
+          },
+          "sensitive_attributes": [
+            [
+              {
+                "type": "get_attr",
+                "value": "data"
+              }
+            ],
+            [
+              {
+                "type": "get_attr",
+                "value": "data_json"
+              }
+            ]
+          ],
+          "private": "bnVsbA==",
+          "dependencies": [
+            "vault_mount.kv"
+          ]
+        }
+      ]
+    },
+    {
+      "mode": "managed",
+      "type": "vault_mount",
+      "name": "ansibe_backups_secrets",
+      "provider": "provider[\"registry.terraform.io/hashicorp/vault\"]",
+      "instances": [
+        {
+          "schema_version": 0,
+          "attributes": {
+            "accessor": "kv_149089e0",
+            "allowed_managed_keys": [],
+            "allowed_response_headers": [],
+            "audit_non_hmac_request_keys": [],
+            "audit_non_hmac_response_keys": [],
+            "default_lease_ttl_seconds": 0,
+            "delegated_auth_accessors": null,
+            "description": "",
+            "external_entropy_access": false,
+            "id": "ansibe-backups-secrets",
+            "identity_token_key": "",
+            "listing_visibility": "",
+            "local": false,
+            "max_lease_ttl_seconds": 0,
+            "namespace": null,
+            "options": {
+              "version": "2"
+            },
+            "passthrough_request_headers": [],
+            "path": "ansibe-backups-secrets",
+            "plugin_version": null,
+            "seal_wrap": false,
+            "type": "kv"
+          },
+          "sensitive_attributes": [],
+          "private": "eyJzY2hlbWFfdmVyc2lvbiI6IjAifQ=="
+        }
+      ]
+    },
+    {
+      "mode": "managed",
+      "type": "vault_mount",
+      "name": "argo_cd",
+      "provider": "provider[\"registry.terraform.io/hashicorp/vault\"]",
+      "instances": [
+        {
+          "schema_version": 0,
+          "attributes": {
+            "accessor": "kv_ea360e43",
+            "allowed_managed_keys": [],
+            "allowed_response_headers": [],
+            "audit_non_hmac_request_keys": [],
+            "audit_non_hmac_response_keys": [],
+            "default_lease_ttl_seconds": 0,
+            "delegated_auth_accessors": null,
+            "description": "",
+            "external_entropy_access": false,
+            "id": "argo-cd",
+            "identity_token_key": "",
+            "listing_visibility": "hidden",
+            "local": false,
+            "max_lease_ttl_seconds": 0,
+            "namespace": null,
+            "options": {
+              "version": "2"
+            },
+            "passthrough_request_headers": [],
+            "path": "argo-cd",
+            "plugin_version": null,
+            "seal_wrap": false,
+            "type": "kv"
+          },
+          "sensitive_attributes": [],
+          "private": "bnVsbA=="
+        }
+      ]
+    },
+    {
+      "mode": "managed",
+      "type": "vault_mount",
+      "name": "aws",
+      "provider": "provider[\"registry.terraform.io/hashicorp/vault\"]",
+      "instances": [
+        {
+          "schema_version": 0,
+          "attributes": {
+            "accessor": "aws_8e23b499",
+            "allowed_managed_keys": [],
+            "allowed_response_headers": [],
+            "audit_non_hmac_request_keys": [],
+            "audit_non_hmac_response_keys": [],
+            "default_lease_ttl_seconds": 0,
+            "delegated_auth_accessors": null,
+            "description": "",
+            "external_entropy_access": false,
+            "id": "aws",
+            "identity_token_key": "",
+            "listing_visibility": "",
+            "local": false,
+            "max_lease_ttl_seconds": 0,
+            "namespace": null,
+            "options": {},
+            "passthrough_request_headers": [],
+            "path": "aws",
+            "plugin_version": null,
+            "seal_wrap": false,
+            "type": "aws"
+          },
+          "sensitive_attributes": [],
+          "private": "eyJzY2hlbWFfdmVyc2lvbiI6IjAifQ=="
+        }
+      ]
+    },
+    {
+      "mode": "managed",
+      "type": "vault_mount",
+      "name": "cloudflare",
+      "provider": "provider[\"registry.terraform.io/hashicorp/vault\"]",
+      "instances": [
+        {
+          "schema_version": 0,
+          "attributes": {
+            "accessor": "kv_a9b11b6a",
+            "allowed_managed_keys": [],
+            "allowed_response_headers": [],
+            "audit_non_hmac_request_keys": [],
+            "audit_non_hmac_response_keys": [],
+            "default_lease_ttl_seconds": 0,
+            "delegated_auth_accessors": null,
+            "description": "",
+            "external_entropy_access": false,
+            "id": "cloudflare",
+            "identity_token_key": "",
+            "listing_visibility": "",
+            "local": false,
+            "max_lease_ttl_seconds": 0,
+            "namespace": null,
+            "options": {
+              "version": "2"
+            },
+            "passthrough_request_headers": [],
+            "path": "cloudflare",
+            "plugin_version": null,
+            "seal_wrap": false,
+            "type": "kv"
+          },
+          "sensitive_attributes": [],
+          "private": "eyJzY2hlbWFfdmVyc2lvbiI6IjAifQ=="
+        }
+      ]
+    },
+    {
+      "mode": "managed",
+      "type": "vault_mount",
+      "name": "ddd",
+      "provider": "provider[\"registry.terraform.io/hashicorp/vault\"]",
+      "instances": [
+        {
+          "schema_version": 0,
+          "attributes": {
+            "accessor": "kv_49486890",
+            "allowed_managed_keys": [],
+            "allowed_response_headers": [],
+            "audit_non_hmac_request_keys": [],
+            "audit_non_hmac_response_keys": [],
+            "default_lease_ttl_seconds": 0,
+            "delegated_auth_accessors": null,
+            "description": "",
+            "external_entropy_access": false,
+            "id": "ddd",
+            "identity_token_key": "",
+            "listing_visibility": "hidden",
+            "local": false,
+            "max_lease_ttl_seconds": 0,
+            "namespace": null,
+            "options": {
+              "version": "2"
+            },
+            "passthrough_request_headers": [],
+            "path": "ddd",
+            "plugin_version": null,
+            "seal_wrap": false,
+            "type": "kv"
+          },
+          "sensitive_attributes": [],
+          "private": "bnVsbA=="
+        }
+      ]
+    },
+    {
+      "mode": "managed",
+      "type": "vault_mount",
+      "name": "ej_prod",
+      "provider": "provider[\"registry.terraform.io/hashicorp/vault\"]",
+      "instances": [
+        {
+          "schema_version": 0,
+          "attributes": {
+            "accessor": "kv_f8ff99a3",
+            "allowed_managed_keys": [],
+            "allowed_response_headers": [],
+            "audit_non_hmac_request_keys": [],
+            "audit_non_hmac_response_keys": [],
+            "default_lease_ttl_seconds": 0,
+            "delegated_auth_accessors": null,
+            "description": "",
+            "external_entropy_access": false,
+            "id": "ej-prod",
+            "identity_token_key": "",
+            "listing_visibility": "hidden",
+            "local": false,
+            "max_lease_ttl_seconds": 0,
+            "namespace": null,
+            "options": {
+              "version": "2"
+            },
+            "passthrough_request_headers": [],
+            "path": "ej-prod",
+            "plugin_version": null,
+            "seal_wrap": false,
+            "type": "kv"
+          },
+          "sensitive_attributes": [],
+          "private": "bnVsbA=="
+        }
+      ]
+    },
+    {
+      "mode": "managed",
+      "type": "vault_mount",
+      "name": "ejbest",
+      "provider": "provider[\"registry.terraform.io/hashicorp/vault\"]",
+      "instances": [
+        {
+          "schema_version": 0,
+          "attributes": {
+            "accessor": "kv_5f620d92",
+            "allowed_managed_keys": [],
+            "allowed_response_headers": [],
+            "audit_non_hmac_request_keys": [],
+            "audit_non_hmac_response_keys": [],
+            "default_lease_ttl_seconds": 0,
+            "delegated_auth_accessors": null,
+            "description": "",
+            "external_entropy_access": false,
+            "id": "ejbest",
+            "identity_token_key": "",
+            "listing_visibility": "",
+            "local": false,
+            "max_lease_ttl_seconds": 0,
+            "namespace": null,
+            "options": {
+              "version": "1"
+            },
+            "passthrough_request_headers": [],
+            "path": "ejbest",
+            "plugin_version": null,
+            "seal_wrap": false,
+            "type": "kv"
+          },
+          "sensitive_attributes": [],
+          "private": "bnVsbA=="
+        }
+      ]
+    },
+    {
+      "mode": "managed",
+      "type": "vault_mount",
+      "name": "englab_dev",
+      "provider": "provider[\"registry.terraform.io/hashicorp/vault\"]",
+      "instances": [
+        {
+          "schema_version": 0,
+          "attributes": {
+            "accessor": "kv_ef15e477",
+            "allowed_managed_keys": [],
+            "allowed_response_headers": [],
+            "audit_non_hmac_request_keys": [],
+            "audit_non_hmac_response_keys": [],
+            "default_lease_ttl_seconds": 0,
+            "delegated_auth_accessors": null,
+            "description": "",
+            "external_entropy_access": false,
+            "id": "englab/dev",
+            "identity_token_key": "",
+            "listing_visibility": "",
+            "local": false,
+            "max_lease_ttl_seconds": 0,
+            "namespace": null,
+            "options": {
+              "version": "2"
+            },
+            "passthrough_request_headers": [],
+            "path": "englab/dev",
+            "plugin_version": null,
+            "seal_wrap": false,
+            "type": "kv"
+          },
+          "sensitive_attributes": [],
+          "private": "eyJzY2hlbWFfdmVyc2lvbiI6IjAifQ=="
+        }
+      ]
+    },
+    {
+      "mode": "managed",
+      "type": "vault_mount",
+      "name": "espch",
+      "provider": "provider[\"registry.terraform.io/hashicorp/vault\"]",
+      "instances": [
+        {
+          "schema_version": 0,
+          "attributes": {
+            "accessor": "kv_18e0dbe5",
+            "allowed_managed_keys": [],
+            "allowed_response_headers": [],
+            "audit_non_hmac_request_keys": [],
+            "audit_non_hmac_response_keys": [],
+            "default_lease_ttl_seconds": 0,
+            "delegated_auth_accessors": null,
+            "description": "",
+            "external_entropy_access": false,
+            "id": "espch",
+            "identity_token_key": "",
+            "listing_visibility": "",
+            "local": false,
+            "max_lease_ttl_seconds": 0,
+            "namespace": null,
+            "options": {
+              "version": "2"
+            },
+            "passthrough_request_headers": [],
+            "path": "espch",
+            "plugin_version": null,
+            "seal_wrap": false,
+            "type": "kv"
+          },
+          "sensitive_attributes": [],
+          "private": "eyJzY2hlbWFfdmVyc2lvbiI6IjAifQ=="
+        }
+      ]
+    },
+    {
+      "mode": "managed",
+      "type": "vault_mount",
+      "name": "gcp_credentials_backend",
+      "provider": "provider[\"registry.terraform.io/hashicorp/vault\"]",
+      "instances": [
+        {
+          "schema_version": 0,
+          "attributes": {
+            "accessor": "gcp_16c9f2dd",
+            "allowed_managed_keys": [],
+            "allowed_response_headers": [],
+            "audit_non_hmac_request_keys": [],
+            "audit_non_hmac_response_keys": [],
+            "default_lease_ttl_seconds": 0,
+            "delegated_auth_accessors": null,
+            "description": "GCP secrets engine for issuing temporary credentials using credentials",
+            "external_entropy_access": false,
+            "id": "gcp-credentials-backend",
+            "identity_token_key": "",
+            "listing_visibility": "",
+            "local": false,
+            "max_lease_ttl_seconds": 0,
+            "namespace": null,
+            "options": {},
+            "passthrough_request_headers": [],
+            "path": "gcp-credentials-backend",
+            "plugin_version": null,
+            "seal_wrap": false,
+            "type": "gcp"
+          },
+          "sensitive_attributes": [],
+          "private": "eyJzY2hlbWFfdmVyc2lvbiI6IjAifQ=="
+        }
+      ]
+    },
+    {
+      "mode": "managed",
+      "type": "vault_mount",
+      "name": "gcp_ejb",
+      "provider": "provider[\"registry.terraform.io/hashicorp/vault\"]",
+      "instances": [
+        {
+          "schema_version": 0,
+          "attributes": {
+            "accessor": "gcp_69a6fd76",
+            "allowed_managed_keys": [],
+            "allowed_response_headers": [],
+            "audit_non_hmac_request_keys": [],
+            "audit_non_hmac_response_keys": [],
+            "default_lease_ttl_seconds": 0,
+            "delegated_auth_accessors": null,
+            "description": "GCP secrets engine for issuing temporary credentials using credentials",
+            "external_entropy_access": false,
+            "id": "gcp-ejb",
+            "identity_token_key": "",
+            "listing_visibility": "",
+            "local": false,
+            "max_lease_ttl_seconds": 0,
+            "namespace": null,
+            "options": {},
+            "passthrough_request_headers": [],
+            "path": "gcp-ejb",
+            "plugin_version": null,
+            "seal_wrap": false,
+            "type": "gcp"
+          },
+          "sensitive_attributes": [],
+          "private": "eyJzY2hlbWFfdmVyc2lvbiI6IjAifQ=="
+        }
+      ]
+    },
+    {
+      "mode": "managed",
+      "type": "vault_mount",
+      "name": "gcp_ejb2",
+      "provider": "provider[\"registry.terraform.io/hashicorp/vault\"]",
+      "instances": [
+        {
+          "schema_version": 0,
+          "attributes": {
+            "accessor": "gcp_ad090c81",
+            "allowed_managed_keys": [],
+            "allowed_response_headers": [],
+            "audit_non_hmac_request_keys": [],
+            "audit_non_hmac_response_keys": [],
+            "default_lease_ttl_seconds": 0,
+            "delegated_auth_accessors": null,
+            "description": "GCP secrets engine for issuing temporary credentials using credentials",
+            "external_entropy_access": false,
+            "id": "gcp-ejb2",
+            "identity_token_key": "",
+            "listing_visibility": "",
+            "local": false,
+            "max_lease_ttl_seconds": 0,
+            "namespace": null,
+            "options": {},
+            "passthrough_request_headers": [],
+            "path": "gcp-ejb2",
+            "plugin_version": null,
+            "seal_wrap": false,
+            "type": "gcp"
+          },
+          "sensitive_attributes": [],
+          "private": "eyJzY2hlbWFfdmVyc2lvbiI6IjAifQ=="
+        }
+      ]
+    },
+    {
+      "mode": "managed",
+      "type": "vault_mount",
+      "name": "gcp_test_test",
+      "provider": "provider[\"registry.terraform.io/hashicorp/vault\"]",
+      "instances": [
+        {
+          "schema_version": 0,
+          "attributes": {
+            "accessor": "gcp_41ab7ee2",
+            "allowed_managed_keys": [],
+            "allowed_response_headers": [],
+            "audit_non_hmac_request_keys": [],
+            "audit_non_hmac_response_keys": [],
+            "default_lease_ttl_seconds": 0,
+            "delegated_auth_accessors": null,
+            "description": "",
+            "external_entropy_access": false,
+            "id": "gcp-test-test",
+            "identity_token_key": "",
+            "listing_visibility": "hidden",
+            "local": false,
+            "max_lease_ttl_seconds": 0,
+            "namespace": null,
+            "options": {},
+            "passthrough_request_headers": [],
+            "path": "gcp-test-test",
+            "plugin_version": null,
+            "seal_wrap": false,
+            "type": "gcp"
+          },
+          "sensitive_attributes": [],
+          "private": "bnVsbA=="
+        }
+      ]
+    },
+    {
+      "mode": "managed",
+      "type": "vault_mount",
+      "name": "identify_token_ttl",
+      "provider": "provider[\"registry.terraform.io/hashicorp/vault\"]",
+      "instances": [
+        {
+          "schema_version": 0,
+          "attributes": {
+            "accessor": "gcp_85a6a6ba",
+            "allowed_managed_keys": [],
+            "allowed_response_headers": [],
+            "audit_non_hmac_request_keys": [],
+            "audit_non_hmac_response_keys": [],
+            "default_lease_ttl_seconds": 0,
+            "delegated_auth_accessors": null,
+            "description": "GCP secrets engine for issuing GCP OAuth token",
+            "external_entropy_access": false,
+            "id": "identify_token_ttl",
+            "identity_token_key": "",
+            "listing_visibility": "",
+            "local": false,
+            "max_lease_ttl_seconds": 0,
+            "namespace": null,
+            "options": {},
+            "passthrough_request_headers": [],
+            "path": "identify_token_ttl",
+            "plugin_version": null,
+            "seal_wrap": false,
+            "type": "gcp"
+          },
+          "sensitive_attributes": [],
+          "private": "eyJzY2hlbWFfdmVyc2lvbiI6IjAifQ=="
+        }
+      ]
+    },
+    {
+      "mode": "managed",
+      "type": "vault_mount",
+      "name": "jenkins_kv",
+      "provider": "provider[\"registry.terraform.io/hashicorp/vault\"]",
+      "instances": [
+        {
+          "schema_version": 0,
+          "attributes": {
+            "accessor": "kv_3a662901",
+            "allowed_managed_keys": [],
+            "allowed_response_headers": [],
+            "audit_non_hmac_request_keys": [],
+            "audit_non_hmac_response_keys": [],
+            "default_lease_ttl_seconds": 0,
+            "delegated_auth_accessors": null,
+            "description": "",
+            "external_entropy_access": false,
+            "id": "jenkins",
+            "identity_token_key": "",
+            "listing_visibility": "",
+            "local": false,
+            "max_lease_ttl_seconds": 0,
+            "namespace": null,
+            "options": {
+              "version": "2"
+            },
+            "passthrough_request_headers": [],
+            "path": "jenkins",
+            "plugin_version": null,
+            "seal_wrap": false,
+            "type": "kv"
+          },
+          "sensitive_attributes": [],
+          "private": "eyJzY2hlbWFfdmVyc2lvbiI6IjAifQ=="
+        }
+      ]
+    },
+    {
+      "mode": "managed",
+      "type": "vault_mount",
+      "name": "keycloak",
+      "provider": "provider[\"registry.terraform.io/hashicorp/vault\"]",
+      "instances": [
+        {
+          "schema_version": 0,
+          "attributes": {
+            "accessor": "kv_c98c7c81",
+            "allowed_managed_keys": [],
+            "allowed_response_headers": [],
+            "audit_non_hmac_request_keys": [],
+            "audit_non_hmac_response_keys": [],
+            "default_lease_ttl_seconds": 0,
+            "delegated_auth_accessors": null,
+            "description": "",
+            "external_entropy_access": false,
+            "id": "keycloak",
+            "identity_token_key": "",
+            "listing_visibility": "hidden",
+            "local": false,
+            "max_lease_ttl_seconds": 0,
+            "namespace": null,
+            "options": {
+              "version": "2"
+            },
+            "passthrough_request_headers": [],
+            "path": "keycloak",
+            "plugin_version": null,
+            "seal_wrap": false,
+            "type": "kv"
+          },
+          "sensitive_attributes": [],
+          "private": "bnVsbA=="
+        }
+      ]
+    },
+    {
+      "mode": "managed",
+      "type": "vault_mount",
+      "name": "kubeadm_cluster",
+      "provider": "provider[\"registry.terraform.io/hashicorp/vault\"]",
+      "instances": [
+        {
+          "schema_version": 0,
+          "attributes": {
+            "accessor": "kv_753acce8",
+            "allowed_managed_keys": [],
+            "allowed_response_headers": [],
+            "audit_non_hmac_request_keys": [],
+            "audit_non_hmac_response_keys": [],
+            "default_lease_ttl_seconds": 0,
+            "delegated_auth_accessors": null,
+            "description": "",
+            "external_entropy_access": false,
+            "id": "kubeadm-cluster",
+            "identity_token_key": "",
+            "listing_visibility": "",
+            "local": false,
+            "max_lease_ttl_seconds": 0,
+            "namespace": null,
+            "options": {
+              "version": "2"
+            },
+            "passthrough_request_headers": [],
+            "path": "kubeadm-cluster",
+            "plugin_version": null,
+            "seal_wrap": false,
+            "type": "kv"
+          },
+          "sensitive_attributes": [],
+          "private": "eyJzY2hlbWFfdmVyc2lvbiI6IjAifQ=="
+        }
+      ]
+    },
+    {
+      "mode": "managed",
+      "type": "vault_mount",
+      "name": "kv",
+      "provider": "provider[\"registry.terraform.io/hashicorp/vault\"]",
+      "instances": [
+        {
+          "schema_version": 0,
+          "attributes": {
+            "accessor": "kv_06bfb326",
+            "allowed_managed_keys": [],
+            "allowed_response_headers": [],
+            "audit_non_hmac_request_keys": [],
+            "audit_non_hmac_response_keys": [],
+            "default_lease_ttl_seconds": 0,
+            "delegated_auth_accessors": null,
+            "description": "KV v2 — all lab secrets",
+            "external_entropy_access": false,
+            "id": "secret",
+            "identity_token_key": "",
+            "listing_visibility": "hidden",
+            "local": false,
+            "max_lease_ttl_seconds": 0,
+            "namespace": null,
+            "options": {
+              "version": "2"
+            },
+            "passthrough_request_headers": [],
+            "path": "secret",
+            "plugin_version": null,
+            "seal_wrap": false,
+            "type": "kv"
+          },
+          "sensitive_attributes": [],
+          "private": "bnVsbA=="
+        }
+      ]
+    },
+    {
+      "mode": "managed",
+      "type": "vault_mount",
+      "name": "kv_v1",
+      "provider": "provider[\"registry.terraform.io/hashicorp/vault\"]",
+      "instances": [
+        {
+          "schema_version": 0,
+          "attributes": {
+            "accessor": "kv_bd108692",
+            "allowed_managed_keys": [],
+            "allowed_response_headers": [],
+            "audit_non_hmac_request_keys": [],
+            "audit_non_hmac_response_keys": [],
+            "default_lease_ttl_seconds": 0,
+            "delegated_auth_accessors": null,
+            "description": "",
+            "external_entropy_access": false,
+            "id": "kv",
+            "identity_token_key": "",
+            "listing_visibility": "",
+            "local": false,
+            "max_lease_ttl_seconds": 0,
+            "namespace": null,
+            "options": {
+              "version": "1"
+            },
+            "passthrough_request_headers": [],
+            "path": "kv",
+            "plugin_version": null,
+            "seal_wrap": false,
+            "type": "kv"
+          },
+          "sensitive_attributes": [],
+          "private": "bnVsbA=="
+        }
+      ]
+    },
+    {
+      "mode": "managed",
+      "type": "vault_mount",
+      "name": "kv_v2",
+      "provider": "provider[\"registry.terraform.io/hashicorp/vault\"]",
+      "instances": [
+        {
+          "schema_version": 0,
+          "attributes": {
+            "accessor": "kv_3f77e8af",
+            "allowed_managed_keys": [],
+            "allowed_response_headers": [],
+            "audit_non_hmac_request_keys": [],
+            "audit_non_hmac_response_keys": [],
+            "default_lease_ttl_seconds": 0,
+            "delegated_auth_accessors": null,
+            "description": "",
+            "external_entropy_access": false,
+            "id": "kv-v2",
+            "identity_token_key": "",
+            "listing_visibility": "",
+            "local": false,
+            "max_lease_ttl_seconds": 0,
+            "namespace": null,
+            "options": {
+              "version": "2"
+            },
+            "passthrough_request_headers": [],
+            "path": "kv-v2",
+            "plugin_version": null,
+            "seal_wrap": false,
+            "type": "kv"
+          },
+          "sensitive_attributes": [],
+          "private": "eyJzY2hlbWFfdmVyc2lvbiI6IjAifQ=="
+        }
+      ]
+    },
+    {
+      "mode": "managed",
+      "type": "vault_mount",
+      "name": "libvirt",
+      "provider": "provider[\"registry.terraform.io/hashicorp/vault\"]",
+      "instances": [
+        {
+          "schema_version": 0,
+          "attributes": {
+            "accessor": "kv_08e6e1ed",
+            "allowed_managed_keys": [],
+            "allowed_response_headers": [],
+            "audit_non_hmac_request_keys": [],
+            "audit_non_hmac_response_keys": [],
+            "default_lease_ttl_seconds": 0,
+            "delegated_auth_accessors": null,
+            "description": "",
+            "external_entropy_access": false,
+            "id": "libvirt",
+            "identity_token_key": "",
+            "listing_visibility": "hidden",
+            "local": false,
+            "max_lease_ttl_seconds": 0,
+            "namespace": null,
+            "options": {
+              "version": "2"
+            },
+            "passthrough_request_headers": [],
+            "path": "libvirt",
+            "plugin_version": null,
+            "seal_wrap": false,
+            "type": "kv"
+          },
+          "sensitive_attributes": [],
+          "private": "bnVsbA=="
+        }
+      ]
+    },
+    {
+      "mode": "managed",
+      "type": "vault_mount",
+      "name": "malcode",
+      "provider": "provider[\"registry.terraform.io/hashicorp/vault\"]",
+      "instances": [
+        {
+          "schema_version": 0,
+          "attributes": {
+            "accessor": "kv_9b7e2f84",
+            "allowed_managed_keys": [],
+            "allowed_response_headers": [],
+            "audit_non_hmac_request_keys": [],
+            "audit_non_hmac_response_keys": [],
+            "default_lease_ttl_seconds": 0,
+            "delegated_auth_accessors": null,
+            "description": "",
+            "external_entropy_access": false,
+            "id": "malcode",
+            "identity_token_key": "",
+            "listing_visibility": "",
+            "local": false,
+            "max_lease_ttl_seconds": 0,
+            "namespace": null,
+            "options": {
+              "version": "1"
+            },
+            "passthrough_request_headers": [],
+            "path": "malcode",
+            "plugin_version": null,
+            "seal_wrap": false,
+            "type": "kv"
+          },
+          "sensitive_attributes": [],
+          "private": "bnVsbA=="
+        }
+      ]
+    },
+    {
+      "mode": "managed",
+      "type": "vault_mount",
+      "name": "mytest",
+      "provider": "provider[\"registry.terraform.io/hashicorp/vault\"]",
+      "instances": [
+        {
+          "schema_version": 0,
+          "attributes": {
+            "accessor": "kv_7067fd11",
+            "allowed_managed_keys": [],
+            "allowed_response_headers": [],
+            "audit_non_hmac_request_keys": [],
+            "audit_non_hmac_response_keys": [],
+            "default_lease_ttl_seconds": 0,
+            "delegated_auth_accessors": null,
+            "description": "",
+            "external_entropy_access": false,
+            "id": "mytest",
+            "identity_token_key": "",
+            "listing_visibility": "",
+            "local": false,
+            "max_lease_ttl_seconds": 0,
+            "namespace": null,
+            "options": {
+              "version": "2"
+            },
+            "passthrough_request_headers": [],
+            "path": "mytest",
+            "plugin_version": null,
+            "seal_wrap": false,
+            "type": "kv"
+          },
+          "sensitive_attributes": [],
+          "private": "eyJzY2hlbWFfdmVyc2lvbiI6IjAifQ=="
+        }
+      ]
+    },
+    {
+      "mode": "managed",
+      "type": "vault_mount",
+      "name": "pki",
+      "provider": "provider[\"registry.terraform.io/hashicorp/vault\"]",
+      "instances": [
+        {
+          "schema_version": 0,
+          "attributes": {
+            "accessor": "pki_6489e7f6",
+            "allowed_managed_keys": [],
+            "allowed_response_headers": [],
+            "audit_non_hmac_request_keys": [],
+            "audit_non_hmac_response_keys": [],
+            "default_lease_ttl_seconds": 31500000,
+            "delegated_auth_accessors": null,
+            "description": "",
+            "external_entropy_access": false,
+            "id": "pki",
+            "identity_token_key": "",
+            "listing_visibility": "",
+            "local": false,
+            "max_lease_ttl_seconds": 31500000,
+            "namespace": null,
+            "options": {},
+            "passthrough_request_headers": [],
+            "path": "pki",
+            "plugin_version": null,
+            "seal_wrap": false,
+            "type": "pki"
+          },
+          "sensitive_attributes": [],
+          "private": "eyJzY2hlbWFfdmVyc2lvbiI6IjAifQ=="
+        }
+      ]
+    },
+    {
+      "mode": "managed",
+      "type": "vault_mount",
+      "name": "proxmox",
+      "provider": "provider[\"registry.terraform.io/hashicorp/vault\"]",
+      "instances": [
+        {
+          "schema_version": 0,
+          "attributes": {
+            "accessor": "kv_39d49e5d",
+            "allowed_managed_keys": [],
+            "allowed_response_headers": [],
+            "audit_non_hmac_request_keys": [],
+            "audit_non_hmac_response_keys": [],
+            "default_lease_ttl_seconds": 0,
+            "delegated_auth_accessors": null,
+            "description": "",
+            "external_entropy_access": false,
+            "id": "proxmox",
+            "identity_token_key": "",
+            "listing_visibility": "",
+            "local": false,
+            "max_lease_ttl_seconds": 0,
+            "namespace": null,
+            "options": {
+              "version": "2"
+            },
+            "passthrough_request_headers": [],
+            "path": "proxmox",
+            "plugin_version": null,
+            "seal_wrap": false,
+            "type": "kv"
+          },
+          "sensitive_attributes": [],
+          "private": "eyJzY2hlbWFfdmVyc2lvbiI6IjAifQ=="
+        }
+      ]
+    },
+    {
+      "mode": "managed",
+      "type": "vault_mount",
+      "name": "secrets_kv",
+      "provider": "provider[\"registry.terraform.io/hashicorp/vault\"]",
+      "instances": [
+        {
+          "schema_version": 0,
+          "attributes": {
+            "accessor": "kv_0b1c9127",
+            "allowed_managed_keys": [],
+            "allowed_response_headers": [],
+            "audit_non_hmac_request_keys": [],
+            "audit_non_hmac_response_keys": [],
+            "default_lease_ttl_seconds": 0,
+            "delegated_auth_accessors": null,
+            "description": "",
+            "external_entropy_access": false,
+            "id": "secrets",
+            "identity_token_key": "",
+            "listing_visibility": "",
+            "local": false,
+            "max_lease_ttl_seconds": 0,
+            "namespace": null,
+            "options": {
+              "version": "1"
+            },
+            "passthrough_request_headers": [],
+            "path": "secrets",
+            "plugin_version": null,
+            "seal_wrap": false,
+            "type": "kv"
+          },
+          "sensitive_attributes": [],
+          "private": "bnVsbA=="
+        }
+      ]
+    },
+    {
+      "mode": "managed",
+      "type": "vault_mount",
+      "name": "servers",
+      "provider": "provider[\"registry.terraform.io/hashicorp/vault\"]",
+      "instances": [
+        {
+          "schema_version": 0,
+          "attributes": {
+            "accessor": "kv_c6e04c7d",
+            "allowed_managed_keys": [],
+            "allowed_response_headers": [],
+            "audit_non_hmac_request_keys": [],
+            "audit_non_hmac_response_keys": [],
+            "default_lease_ttl_seconds": 0,
+            "delegated_auth_accessors": null,
+            "description": "",
+            "external_entropy_access": false,
+            "id": "servers",
+            "identity_token_key": "",
+            "listing_visibility": "",
+            "local": false,
+            "max_lease_ttl_seconds": 0,
+            "namespace": null,
+            "options": {
+              "version": "2"
+            },
+            "passthrough_request_headers": [],
+            "path": "servers",
+            "plugin_version": null,
+            "seal_wrap": false,
+            "type": "kv"
+          },
+          "sensitive_attributes": [],
+          "private": "eyJzY2hlbWFfdmVyc2lvbiI6IjAifQ=="
+        }
+      ]
+    },
+    {
+      "mode": "managed",
+      "type": "vault_mount",
+      "name": "ssh_ca",
+      "provider": "provider[\"registry.terraform.io/hashicorp/vault\"]",
+      "instances": [
+        {
+          "schema_version": 0,
+          "attributes": {
+            "accessor": "ssh_ecdfe053",
+            "allowed_managed_keys": [],
+            "allowed_response_headers": [],
+            "audit_non_hmac_request_keys": [],
+            "audit_non_hmac_response_keys": [],
+            "default_lease_ttl_seconds": 0,
+            "delegated_auth_accessors": null,
+            "description": "",
+            "external_entropy_access": false,
+            "id": "ssh",
+            "identity_token_key": "",
+            "listing_visibility": "",
+            "local": false,
+            "max_lease_ttl_seconds": 0,
+            "namespace": null,
+            "options": {},
+            "passthrough_request_headers": [],
+            "path": "ssh",
+            "plugin_version": null,
+            "seal_wrap": false,
+            "type": "ssh"
+          },
+          "sensitive_attributes": [],
+          "private": "eyJzY2hlbWFfdmVyc2lvbiI6IjAifQ=="
+        }
+      ]
+    },
+    {
+      "mode": "managed",
+      "type": "vault_mount",
+      "name": "ssh_key",
+      "provider": "provider[\"registry.terraform.io/hashicorp/vault\"]",
+      "instances": [
+        {
+          "schema_version": 0,
+          "attributes": {
+            "accessor": "kv_dd7516ed",
+            "allowed_managed_keys": [],
+            "allowed_response_headers": [],
+            "audit_non_hmac_request_keys": [],
+            "audit_non_hmac_response_keys": [],
+            "default_lease_ttl_seconds": 0,
+            "delegated_auth_accessors": null,
+            "description": "",
+            "external_entropy_access": false,
+            "id": "ssh_key",
+            "identity_token_key": "",
+            "listing_visibility": "",
+            "local": false,
+            "max_lease_ttl_seconds": 0,
+            "namespace": null,
+            "options": {
+              "version": "2"
+            },
+            "passthrough_request_headers": [],
+            "path": "ssh_key",
+            "plugin_version": null,
+            "seal_wrap": false,
+            "type": "kv"
+          },
+          "sensitive_attributes": [],
+          "private": "eyJzY2hlbWFfdmVyc2lvbiI6IjAifQ=="
+        }
+      ]
+    },
+    {
+      "mode": "managed",
+      "type": "vault_mount",
+      "name": "ssh_keys",
+      "provider": "provider[\"registry.terraform.io/hashicorp/vault\"]",
+      "instances": [
+        {
+          "schema_version": 0,
+          "attributes": {
+            "accessor": "kv_f83b7d96",
+            "allowed_managed_keys": [],
+            "allowed_response_headers": [],
+            "audit_non_hmac_request_keys": [],
+            "audit_non_hmac_response_keys": [],
+            "default_lease_ttl_seconds": 0,
+            "delegated_auth_accessors": null,
+            "description": "",
+            "external_entropy_access": false,
+            "id": "ssh-keys",
+            "identity_token_key": "",
+            "listing_visibility": "hidden",
+            "local": false,
+            "max_lease_ttl_seconds": 0,
+            "namespace": null,
+            "options": {
+              "version": "2"
+            },
+            "passthrough_request_headers": [],
+            "path": "ssh-keys",
+            "plugin_version": null,
+            "seal_wrap": false,
+            "type": "kv"
+          },
+          "sensitive_attributes": [],
+          "private": "bnVsbA=="
+        }
+      ]
+    },
+    {
+      "mode": "managed",
+      "type": "vault_mount",
+      "name": "ssh_pass",
+      "provider": "provider[\"registry.terraform.io/hashicorp/vault\"]",
+      "instances": [
+        {
+          "schema_version": 0,
+          "attributes": {
+            "accessor": "kv_ff9aa85c",
+            "allowed_managed_keys": [],
+            "allowed_response_headers": [],
+            "audit_non_hmac_request_keys": [],
+            "audit_non_hmac_response_keys": [],
+            "default_lease_ttl_seconds": 0,
+            "delegated_auth_accessors": null,
+            "description": "",
+            "external_entropy_access": false,
+            "id": "ssh_pass",
+            "identity_token_key": "",
+            "listing_visibility": "",
+            "local": false,
+            "max_lease_ttl_seconds": 0,
+            "namespace": null,
+            "options": {
+              "version": "2"
+            },
+            "passthrough_request_headers": [],
+            "path": "ssh_pass",
+            "plugin_version": null,
+            "seal_wrap": false,
+            "type": "kv"
+          },
+          "sensitive_attributes": [],
+          "private": "eyJzY2hlbWFfdmVyc2lvbiI6IjAifQ=="
+        }
+      ]
+    },
+    {
+      "mode": "managed",
+      "type": "vault_mount",
+      "name": "test_aws_iam",
+      "provider": "provider[\"registry.terraform.io/hashicorp/vault\"]",
+      "instances": [
+        {
+          "schema_version": 0,
+          "attributes": {
+            "accessor": "kv_06d5e734",
+            "allowed_managed_keys": [],
+            "allowed_response_headers": [],
+            "audit_non_hmac_request_keys": [],
+            "audit_non_hmac_response_keys": [],
+            "default_lease_ttl_seconds": 0,
+            "delegated_auth_accessors": null,
+            "description": "",
+            "external_entropy_access": false,
+            "id": "test-aws/iam",
+            "identity_token_key": "",
+            "listing_visibility": "",
+            "local": false,
+            "max_lease_ttl_seconds": 0,
+            "namespace": null,
+            "options": {
+              "version": "1"
+            },
+            "passthrough_request_headers": [],
+            "path": "test-aws/iam",
+            "plugin_version": null,
+            "seal_wrap": false,
+            "type": "kv"
+          },
+          "sensitive_attributes": [],
+          "private": "bnVsbA=="
+        }
+      ]
+    },
+    {
+      "mode": "managed",
+      "type": "vault_mount",
+      "name": "test_monitor",
+      "provider": "provider[\"registry.terraform.io/hashicorp/vault\"]",
+      "instances": [
+        {
+          "schema_version": 0,
+          "attributes": {
+            "accessor": "kv_51199e46",
+            "allowed_managed_keys": [],
+            "allowed_response_headers": [],
+            "audit_non_hmac_request_keys": [],
+            "audit_non_hmac_response_keys": [],
+            "default_lease_ttl_seconds": 0,
+            "delegated_auth_accessors": null,
+            "description": "",
+            "external_entropy_access": false,
+            "id": "test-monitor",
+            "identity_token_key": "",
+            "listing_visibility": "hidden",
+            "local": false,
+            "max_lease_ttl_seconds": 0,
+            "namespace": null,
+            "options": {
+              "version": "2"
+            },
+            "passthrough_request_headers": [],
+            "path": "test-monitor",
+            "plugin_version": null,
+            "seal_wrap": false,
+            "type": "kv"
+          },
+          "sensitive_attributes": [],
+          "private": "bnVsbA=="
+        }
+      ]
+    },
+    {
+      "mode": "managed",
+      "type": "vault_mount",
+      "name": "tp_link",
+      "provider": "provider[\"registry.terraform.io/hashicorp/vault\"]",
+      "instances": [
+        {
+          "schema_version": 0,
+          "attributes": {
+            "accessor": "ssh_e4c489ac",
+            "allowed_managed_keys": [],
+            "allowed_response_headers": [],
+            "audit_non_hmac_request_keys": [],
+            "audit_non_hmac_response_keys": [],
+            "default_lease_ttl_seconds": 0,
+            "delegated_auth_accessors": null,
+            "description": "",
+            "external_entropy_access": false,
+            "id": "tp-link",
+            "identity_token_key": "",
+            "listing_visibility": "hidden",
+            "local": false,
+            "max_lease_ttl_seconds": 0,
+            "namespace": null,
+            "options": {},
+            "passthrough_request_headers": [],
+            "path": "tp-link",
+            "plugin_version": null,
+            "seal_wrap": false,
+            "type": "ssh"
+          },
+          "sensitive_attributes": [],
+          "private": "bnVsbA=="
+        }
+      ]
+    },
+    {
+      "mode": "managed",
+      "type": "vault_mount",
+      "name": "tracker_db",
+      "provider": "provider[\"registry.terraform.io/hashicorp/vault\"]",
+      "instances": [
+        {
+          "schema_version": 0,
+          "attributes": {
+            "accessor": "kv_546e0bc7",
+            "allowed_managed_keys": [],
+            "allowed_response_headers": [],
+            "audit_non_hmac_request_keys": [],
+            "audit_non_hmac_response_keys": [],
+            "default_lease_ttl_seconds": 0,
+            "delegated_auth_accessors": null,
+            "description": "",
+            "external_entropy_access": false,
+            "id": "tracker-db",
+            "identity_token_key": "",
+            "listing_visibility": "hidden",
+            "local": false,
+            "max_lease_ttl_seconds": 0,
+            "namespace": null,
+            "options": {
+              "version": "2"
+            },
+            "passthrough_request_headers": [],
+            "path": "tracker-db",
+            "plugin_version": null,
+            "seal_wrap": false,
+            "type": "kv"
+          },
+          "sensitive_attributes": [],
+          "private": "bnVsbA=="
+        }
+      ]
+    },
+    {
+      "mode": "managed",
+      "type": "vault_mount",
+      "name": "transit",
+      "provider": "provider[\"registry.terraform.io/hashicorp/vault\"]",
+      "instances": [
+        {
+          "schema_version": 0,
+          "attributes": {
+            "accessor": "transit_f1483fcd",
+            "allowed_managed_keys": [],
+            "allowed_response_headers": [],
+            "audit_non_hmac_request_keys": [],
+            "audit_non_hmac_response_keys": [],
+            "default_lease_ttl_seconds": 0,
+            "delegated_auth_accessors": null,
+            "description": "",
+            "external_entropy_access": false,
+            "id": "transit",
+            "identity_token_key": "",
+            "listing_visibility": "",
+            "local": false,
+            "max_lease_ttl_seconds": 0,
+            "namespace": null,
+            "options": {},
+            "passthrough_request_headers": [],
+            "path": "transit",
+            "plugin_version": null,
+            "seal_wrap": false,
+            "type": "transit"
+          },
+          "sensitive_attributes": [],
+          "private": "eyJzY2hlbWFfdmVyc2lvbiI6IjAifQ=="
+        }
+      ]
+    },
+    {
+      "mode": "managed",
+      "type": "vault_policy",
+      "name": "admin",
+      "provider": "provider[\"registry.terraform.io/hashicorp/vault\"]",
+      "instances": [
+        {
+          "schema_version": 0,
+          "attributes": {
+            "id": "admin",
+            "name": "admin",
+            "namespace": null,
+            "policy": "path \"sys/health\" {\n  capabilities = [\"read\", \"sudo\"]\n}\npath \"sys/policies/acl\" {\n  capabilities = [\"list\"]\n}\npath \"sys/policies/acl/*\" {\n  capabilities = [\"create\", \"read\", \"update\", \"delete\", \"list\", \"sudo\"]\n}\npath \"auth/*\" {\n  capabilities = [\"create\", \"read\", \"update\", \"delete\", \"list\", \"sudo\"]\n}\npath \"sys/auth/*\" {\n  capabilities = [\"create\", \"update\", \"delete\", \"sudo\"]\n}\npath \"sys/auth\" {\n  capabilities = [\"read\"]\n}\npath \"secret/*\" {\n  capabilities = [\"create\", \"read\", \"update\", \"delete\", \"list\", \"sudo\"]\n}\npath \"secrets/*\" {\n  capabilities = [\"create\", \"read\", \"update\", \"delete\", \"list\", \"sudo\"]\n}\npath \"jenkins/*\" {\n  capabilities = [\"create\", \"read\", \"update\", \"delete\", \"list\", \"sudo\"]\n}\npath \"kv-v2/data/*\" {\n  capabilities = [\"create\", \"read\", \"update\", \"delete\", \"list\", \"sudo\"]\n}\npath \"kv-v2/metadata/*\" {\n  capabilities = [\"create\", \"read\", \"update\", \"delete\", \"list\", \"sudo\"]\n}\npath \"sys/mounts/*\" {\n  capabilities = [\"create\", \"read\", \"update\", \"delete\", \"list\", \"sudo\"]\n}\npath \"sys/mounts\" {\n  capabilities = [\"read\"]\n}\npath \"sys/storage/raft/snapshot\" {\n  capabilities = [\"read\"]\n}\npath \"aws/*\" {\n  capabilities = [\"create\", \"read\", \"update\", \"delete\", \"list\", \"sudo\"]\n}\npath \"transit/*\" {\n  capabilities = [\"create\", \"read\", \"update\", \"delete\", \"list\", \"sudo\"]\n}\n"
+          },
+          "sensitive_attributes": [],
+          "private": "bnVsbA=="
+        }
+      ]
+    },
+    {
+      "mode": "managed",
+      "type": "vault_policy",
+      "name": "ansible",
+      "provider": "provider[\"registry.terraform.io/hashicorp/vault\"]",
+      "instances": [
+        {
+          "schema_version": 0,
+          "attributes": {
+            "id": "ansible",
+            "name": "ansible",
+            "namespace": null,
+            "policy": "path \"ansibe-backups-secrets/data/*\" {\n  capabilities = [\"read\", \"list\"]\n}\npath \"ansibe-backups-secrets/metadata/*\" {\n  capabilities = [\"read\", \"list\"]\n}\n"
+          },
+          "sensitive_attributes": [],
+          "private": "bnVsbA=="
+        }
+      ]
+    },
+    {
+      "mode": "managed",
+      "type": "vault_policy",
+      "name": "aws_access",
+      "provider": "provider[\"registry.terraform.io/hashicorp/vault\"]",
+      "instances": [
+        {
+          "schema_version": 0,
+          "attributes": {
+            "id": "aws-access",
+            "name": "aws-access",
+            "namespace": null,
+            "policy": "path \"aws/*\" {\n  capabilities = [\"create\", \"read\", \"update\", \"delete\", \"list\"]\n}\npath \"aws/sts/*\" {\n  capabilities = [\"create\", \"update\"]\n}\n"
+          },
+          "sensitive_attributes": [],
+          "private": "bnVsbA=="
+        }
+      ]
+    },
+    {
+      "mode": "managed",
+      "type": "vault_policy",
+      "name": "aws_credentials_policy",
+      "provider": "provider[\"registry.terraform.io/hashicorp/vault\"]",
+      "instances": [
+        {
+          "schema_version": 0,
+          "attributes": {
+            "id": "aws-credentials-policy",
+            "name": "aws-credentials-policy",
+            "namespace": null,
+            "policy": "path \"secret/aws_credentials\" {\n  capabilities = [\"read\"]\n}\n"
+          },
+          "sensitive_attributes": [],
+          "private": "bnVsbA=="
+        }
+      ]
+    },
+    {
+      "mode": "managed",
+      "type": "vault_policy",
+      "name": "basic_policy_template",
+      "provider": "provider[\"registry.terraform.io/hashicorp/vault\"]",
+      "instances": [
+        {
+          "schema_version": 0,
+          "attributes": {
+            "id": "basic-policy-template",
+            "name": "basic-policy-template",
+            "namespace": null,
+            "policy": "path \"aws/*\" {\n  capabilities = [\"create\", \"read\", \"update\", \"delete\", \"list\", \"sudo\"]\n}\npath \"secrets/*\" {\n  capabilities = [\"create\", \"read\", \"update\", \"delete\", \"list\", \"sudo\"]\n}\n"
+          },
+          "sensitive_attributes": [],
+          "private": "bnVsbA=="
+        }
+      ]
+    },
+    {
+      "mode": "managed",
+      "type": "vault_policy",
+      "name": "cloudflare_access",
+      "provider": "provider[\"registry.terraform.io/hashicorp/vault\"]",
+      "instances": [
+        {
+          "schema_version": 0,
+          "attributes": {
+            "id": "cloudflare-access",
+            "name": "cloudflare-access",
+            "namespace": null,
+            "policy": "path \"secret/cloudflare/*\" {\n  capabilities = [\"create\", \"read\", \"update\", \"delete\", \"list\"]\n}\n"
+          },
+          "sensitive_attributes": [],
+          "private": "bnVsbA=="
+        }
+      ]
+    },
+    {
+      "mode": "managed",
+      "type": "vault_policy",
+      "name": "cloudflare_ssl_certs",
+      "provider": "provider[\"registry.terraform.io/hashicorp/vault\"]",
+      "instances": [
+        {
+          "schema_version": 0,
+          "attributes": {
+            "id": "cloudflare-ssl-certs",
+            "name": "cloudflare-ssl-certs",
+            "namespace": null,
+            "policy": "path \"secret/cloudflare/*\" {\n  capabilities = [\"read\", \"update\"]\n}\n"
+          },
+          "sensitive_attributes": [],
+          "private": "bnVsbA=="
+        }
+      ]
+    },
+    {
+      "mode": "managed",
+      "type": "vault_policy",
+      "name": "ej_policy",
+      "provider": "provider[\"registry.terraform.io/hashicorp/vault\"]",
+      "instances": [
+        {
+          "schema_version": 0,
+          "attributes": {
+            "id": "ej-policy",
+            "name": "ej-policy",
+            "namespace": null,
+            "policy": "path \"sys/health\" {\n  capabilities = [\"read\", \"sudo\"]\n}\npath \"sys/policies/acl\" {\n  capabilities = [\"list\"]\n}\npath \"sys/policies/acl/*\" {\n  capabilities = [\"create\", \"read\", \"update\", \"delete\", \"list\", \"sudo\"]\n}\npath \"auth/*\" {\n  capabilities = [\"create\", \"read\", \"update\", \"delete\", \"list\", \"sudo\"]\n}\npath \"sys/auth/*\" {\n  capabilities = [\"create\", \"update\", \"delete\", \"sudo\"]\n}\npath \"sys/auth\" {\n  capabilities = [\"read\"]\n}\npath \"secret/*\" {\n  capabilities = [\"create\", \"read\", \"update\", \"delete\", \"list\", \"sudo\"]\n}\npath \"secrets/*\" {\n  capabilities = [\"create\", \"read\", \"update\", \"delete\", \"list\", \"sudo\"]\n}\npath \"jenkins/*\" {\n  capabilities = [\"create\", \"read\", \"update\", \"delete\", \"list\", \"sudo\"]\n}\npath \"kv-v2/data/*\" {\n  capabilities = [\"create\", \"read\", \"update\", \"delete\", \"list\", \"sudo\"]\n}\npath \"kv-v2/metadata/*\" {\n  capabilities = [\"create\", \"read\", \"update\", \"delete\", \"list\", \"sudo\"]\n}\npath \"sys/mounts/*\" {\n  capabilities = [\"create\", \"read\", \"update\", \"delete\", \"list\", \"sudo\"]\n}\npath \"sys/mounts\" {\n  capabilities = [\"read\"]\n}\npath \"aws/*\" {\n  capabilities = [\"create\", \"read\", \"update\", \"delete\", \"list\", \"sudo\"]\n}\npath \"secrets/*\" {\n  capabilities = [\"create\", \"read\", \"update\", \"delete\", \"list\", \"sudo\"]\n}\npath \"transit/*\" {\n  capabilities = [\"create\", \"read\", \"update\", \"delete\", \"list\", \"sudo\"]\n}\npath \"sys/storage/raft/snapshot\" {\n  capabilities = [\"read\"]\n}\n"
+          },
+          "sensitive_attributes": [],
+          "private": "bnVsbA=="
+        }
+      ]
+    },
+    {
+      "mode": "managed",
+      "type": "vault_policy",
+      "name": "espch",
+      "provider": "provider[\"registry.terraform.io/hashicorp/vault\"]",
+      "instances": [
+        {
+          "schema_version": 0,
+          "attributes": {
+            "id": "espch",
+            "name": "espch",
+            "namespace": null,
+            "policy": "path \"espch/data/*\" {\n  capabilities = [\"read\", \"list\"]\n}\npath \"espch/metadata/*\" {\n  capabilities = [\"read\", \"list\"]\n}\npath \"auth/approle/role/espch-approle/role-id\" {\n  capabilities = [\"read\"]\n}\npath \"auth/approle/role/espch-approle/secret-id\" {\n  capabilities = [\"create\", \"update\"]\n}\npath \"auth/approle/login\" {\n  capabilities = [\"create\", \"update\"]\n}\n"
+          },
+          "sensitive_attributes": [],
+          "private": "bnVsbA=="
+        }
+      ]
+    },
+    {
+      "mode": "managed",
+      "type": "vault_policy",
+      "name": "espch_malcode_policy",
+      "provider": "provider[\"registry.terraform.io/hashicorp/vault\"]",
+      "instances": [
+        {
+          "schema_version": 0,
+          "attributes": {
+            "id": "espch-malcode-policy",
+            "name": "espch-malcode-policy",
+            "namespace": null,
+            "policy": "path \"malcode/data/*\" {\n  capabilities = [\"create\", \"update\", \"read\", \"list\", \"delete\"]\n}\npath \"malcode/metadata/*\" {\n  capabilities = [\"read\", \"list\"]\n}\n"
+          },
+          "sensitive_attributes": [],
+          "private": "eyJzY2hlbWFfdmVyc2lvbiI6IjAifQ=="
+        }
+      ]
+    },
+    {
+      "mode": "managed",
+      "type": "vault_policy",
+      "name": "gcp_role_set",
+      "provider": "provider[\"registry.terraform.io/hashicorp/vault\"]",
+      "instances": [
+        {
+          "schema_version": 0,
+          "attributes": {
+            "id": "gcp-role-set",
+            "name": "gcp-role-set",
+            "namespace": null,
+            "policy": "path \"/gcp/roleset/+\" {\n  capabilities = [\"read\"]\n}\n"
+          },
+          "sensitive_attributes": [],
+          "private": "bnVsbA=="
+        }
+      ]
+    },
+    {
+      "mode": "managed",
+      "type": "vault_policy",
+      "name": "key_cloak_policy",
+      "provider": "provider[\"registry.terraform.io/hashicorp/vault\"]",
+      "instances": [
+        {
+          "schema_version": 0,
+          "attributes": {
+            "id": "key-cloak-policy.hcl",
+            "name": "key-cloak-policy.hcl",
+            "namespace": null,
+            "policy": "path \"key-cloak/env\" {\n  capabilities = [\"create\", \"read\", \"update\", \"delete\", \"list\"]\n}\n"
+          },
+          "sensitive_attributes": [],
+          "private": "bnVsbA=="
+        }
+      ]
+    },
+    {
+      "mode": "managed",
+      "type": "vault_policy",
+      "name": "kv_admin",
+      "provider": "provider[\"registry.terraform.io/hashicorp/vault\"]",
+      "instances": [
+        {
+          "schema_version": 0,
+          "attributes": {
+            "id": "kv-admin",
+            "name": "kv-admin",
+            "namespace": null,
+            "policy": "# Full KV v2 management\npath \"secret/*\" {\n  capabilities = [\"create\", \"read\", \"update\", \"delete\", \"list\"]\n}\npath \"secret/metadata/*\" {\n  capabilities = [\"read\", \"list\", \"delete\"]\n}\npath \"secret/data/*\" {\n  capabilities = [\"create\", \"read\", \"update\", \"delete\"]\n}\n"
+          },
+          "sensitive_attributes": [],
+          "private": "bnVsbA=="
+        }
+      ]
+    },
+    {
+      "mode": "managed",
+      "type": "vault_policy",
+      "name": "kv_read",
+      "provider": "provider[\"registry.terraform.io/hashicorp/vault\"]",
+      "instances": [
+        {
+          "index_key": "deployer",
+          "schema_version": 0,
+          "attributes": {
+            "id": "kv-read-deployer",
+            "name": "kv-read-deployer",
+            "namespace": null,
+            "policy": "path \"secret/data/shared/app-service/*\" {\n  capabilities = [\"read\", \"list\"]\n}\n"
+          },
+          "sensitive_attributes": [],
+          "private": "bnVsbA=="
+        },
+        {
+          "index_key": "k8s-operator",
+          "schema_version": 0,
+          "attributes": {
+            "id": "kv-read-k8s-operator",
+            "name": "kv-read-k8s-operator",
+            "namespace": null,
+            "policy": "path \"secret/data/shared/app-service/*\" {\n  capabilities = [\"read\", \"list\"]\n}\n"
+          },
+          "sensitive_attributes": [],
+          "private": "bnVsbA=="
+        },
+        {
+          "index_key": "platform-admin",
+          "schema_version": 0,
+          "attributes": {
+            "id": "kv-read-platform-admin",
+            "name": "kv-read-platform-admin",
+            "namespace": null,
+            "policy": "path \"secret/data/shared/anydesk/*\" {\n  capabilities = [\"read\", \"list\"]\n}\n\n\npath \"secret/data/shared/app-service/*\" {\n  capabilities = [\"read\", \"list\"]\n}\n\n\npath \"secret/data/apps/*\" {\n  capabilities = [\"read\", \"list\"]\n}\n"
+          },
+          "sensitive_attributes": [],
+          "private": "bnVsbA=="
+        }
+      ]
+    },
+    {
+      "mode": "managed",
+      "type": "vault_policy",
+      "name": "root_equivalent",
+      "provider": "provider[\"registry.terraform.io/hashicorp/vault\"]",
+      "instances": [
+        {
+          "schema_version": 0,
+          "attributes": {
+            "id": "root-equivalent",
+            "name": "root-equivalent",
+            "namespace": null,
+            "policy": "path \"*\" {\n  capabilities = [\"create\", \"read\", \"update\", \"delete\", \"list\", \"sudo\"]\n}\n"
+          },
+          "sensitive_attributes": [],
+          "private": "bnVsbA=="
+        }
+      ]
+    },
+    {
+      "mode": "managed",
+      "type": "vault_policy",
+      "name": "ssh_access_policy",
+      "provider": "provider[\"registry.terraform.io/hashicorp/vault\"]",
+      "instances": [
+        {
+          "schema_version": 0,
+          "attributes": {
+            "id": "ssh-access-policy",
+            "name": "ssh-access-policy",
+            "namespace": null,
+            "policy": "path \"ssh/creds/my-role\" {\n  capabilities = [\"create\", \"read\", \"update\", \"delete\", \"list\"]\n}\n"
+          },
+          "sensitive_attributes": [],
+          "private": "bnVsbA=="
+        }
+      ]
+    },
+    {
+      "mode": "managed",
+      "type": "vault_policy",
+      "name": "ssh_key_policy",
+      "provider": "provider[\"registry.terraform.io/hashicorp/vault\"]",
+      "instances": [
+        {
+          "schema_version": 0,
+          "attributes": {
+            "id": "ssh_key_policy",
+            "name": "ssh_key_policy",
+            "namespace": null,
+            "policy": "path \"auth/ssh/login\" {\n  capabilities = [\"create\"]\n  allowed_parameters = {\n    \"username\" = [\"root\"]\n    \"ip\" = [\"*\"]\n  }\n}\npath \"kv/ssh_key/*\" {\n  capabilities = [\"create\", \"read\", \"update\", \"delete\", \"list\", \"sudo\"]\n}\n"
+          },
+          "sensitive_attributes": [],
+          "private": "bnVsbA=="
+        }
+      ]
+    },
+    {
+      "mode": "managed",
+      "type": "vault_policy",
+      "name": "ssh_key_read",
+      "provider": "provider[\"registry.terraform.io/hashicorp/vault\"]",
+      "instances": [
+        {
+          "schema_version": 0,
+          "attributes": {
+            "id": "ssh-key-read",
+            "name": "ssh-key-read",
+            "namespace": null,
+            "policy": "path \"kubeadm-cluster/data/ssh-key\" {\n  capabilities = [\"read\"]\n}\n"
+          },
+          "sensitive_attributes": [],
+          "private": "eyJzY2hlbWFfdmVyc2lvbiI6IjAifQ=="
+        }
+      ]
+    },
+    {
+      "mode": "managed",
+      "type": "vault_policy",
+      "name": "ticket_policy",
+      "provider": "provider[\"registry.terraform.io/hashicorp/vault\"]",
+      "instances": [
+        {
+          "schema_version": 0,
+          "attributes": {
+            "id": "ticket-policy",
+            "name": "ticket-policy",
+            "namespace": null,
+            "policy": "path \"tracker-db/data/*\" {\n  capabilities = [\"create\", \"update\", \"read\", \"list\", \"delete\"]\n}\npath \"tracker-db/metadata/*\" {\n  capabilities = [\"read\", \"list\"]\n}\npath \"auth/token/lookup-self\" {\n  capabilities = [\"read\"]\n}\n"
+          },
+          "sensitive_attributes": [],
+          "private": "bnVsbA=="
+        }
+      ]
+    },
+    {
+      "mode": "managed",
+      "type": "vault_policy",
+      "name": "tracker_ci",
+      "provider": "provider[\"registry.terraform.io/hashicorp/vault\"]",
+      "instances": [
+        {
+          "schema_version": 0,
+          "attributes": {
+            "id": "tracker-ci",
+            "name": "tracker-ci",
+            "namespace": null,
+            "policy": "path \"tracker-db/data/API_AUTH_TOKEN\" {\n  capabilities = [\"read\"]\n}\n"
+          },
+          "sensitive_attributes": [],
+          "private": "bnVsbA=="
+        }
+      ]
+    },
+    {
+      "mode": "managed",
+      "type": "vault_policy",
+      "name": "users_list_policy",
+      "provider": "provider[\"registry.terraform.io/hashicorp/vault\"]",
+      "instances": [
+        {
+          "schema_version": 0,
+          "attributes": {
+            "id": "users-list-policy",
+            "name": "users-list-policy",
+            "namespace": null,
+            "policy": "path \"secret/users/xyz1\" {\n  capabilities = [\"list\"]\n}\n"
+          },
+          "sensitive_attributes": [],
+          "private": "eyJzY2hlbWFfdmVyc2lvbiI6IjAifQ=="
+        }
+      ]
+    },
+    {
+      "mode": "managed",
+      "type": "vault_policy",
+      "name": "users_read_policy",
+      "provider": "provider[\"registry.terraform.io/hashicorp/vault\"]",
+      "instances": [
+        {
+          "schema_version": 0,
+          "attributes": {
+            "id": "users-read-policy",
+            "name": "users-read-policy",
+            "namespace": null,
+            "policy": "path \"secret/users/xyz1\" {\n  capabilities = [\"list\"]\n}\n"
+          },
+          "sensitive_attributes": [],
+          "private": "eyJzY2hlbWFfdmVyc2lvbiI6IjAifQ=="
+        }
+      ]
+    },
+    {
+      "mode": "managed",
+      "type": "vault_policy",
+      "name": "vault_admin",
+      "provider": "provider[\"registry.terraform.io/hashicorp/vault\"]",
+      "instances": [
+        {
+          "schema_version": 0,
+          "attributes": {
+            "id": "vault-admin",
+            "name": "vault-admin",
+            "namespace": null,
+            "policy": "# Full Vault administration\n# Manage policies\npath \"sys/policies/*\" {\n  capabilities = [\"create\", \"read\", \"update\", \"delete\", \"list\"]\n}\npath \"sys/policy/*\" {\n  capabilities = [\"create\", \"read\", \"update\", \"delete\", \"list\"]\n}\n\n# Manage auth methods\npath \"sys/auth/*\" {\n  capabilities = [\"create\", \"read\", \"update\", \"delete\", \"list\", \"sudo\"]\n}\npath \"auth/*\" {\n  capabilities = [\"create\", \"read\", \"update\", \"delete\", \"list\"]\n}\n\n# Manage secrets engines\npath \"sys/mounts/*\" {\n  capabilities = [\"create\", \"read\", \"update\", \"delete\", \"list\"]\n}\npath \"sys/mounts\" {\n  capabilities = [\"read\", \"list\"]\n}\n\n# Manage audit backends\npath \"sys/audit/*\" {\n  capabilities = [\"create\", \"read\", \"update\", \"delete\", \"list\", \"sudo\"]\n}\npath \"sys/audit\" {\n  capabilities = [\"read\", \"list\"]\n}\n\n# Vault health and status\npath \"sys/health\" {\n  capabilities = [\"read\"]\n}\npath \"sys/seal-status\" {\n  capabilities = [\"read\"]\n}\npath \"sys/leader\" {\n  capabilities = [\"read\"]\n}\npath \"sys/storage/raft/autopilot/state\" {\n  capabilities = [\"read\"]\n}\n\n# Read Vault configuration\npath \"sys/config/*\" {\n  capabilities = [\"read\", \"list\"]\n}\n\n# Token management\npath \"auth/token/*\" {\n  capabilities = [\"create\", \"read\", \"update\", \"delete\", \"list\"]\n}\n\n# SSH CA management\npath \"ssh/*\" {\n  capabilities = [\"create\", \"read\", \"update\", \"delete\", \"list\"]\n}\n"
+          },
+          "sensitive_attributes": [],
+          "private": "bnVsbA=="
+        }
+      ]
+    },
+    {
+      "mode": "managed",
+      "type": "vault_policy",
+      "name": "vault_ssh",
+      "provider": "provider[\"registry.terraform.io/hashicorp/vault\"]",
+      "instances": [
+        {
+          "schema_version": 0,
+          "attributes": {
+            "id": "vault-ssh",
+            "name": "vault-ssh",
+            "namespace": null,
+            "policy": "path \"ssh/*\" {\n  capabilities = [\"create\", \"read\", \"update\", \"delete\", \"list\"]\n}\npath \"ssh/verify\" {\n  capabilities = [\"create\", \"update\"]\n}\n"
+          },
+          "sensitive_attributes": [],
+          "private": "bnVsbA=="
+        }
+      ]
+    },
+    {
+      "mode": "managed",
+      "type": "vault_policy",
+      "name": "zone",
+      "provider": "provider[\"registry.terraform.io/hashicorp/vault\"]",
+      "instances": [
+        {
+          "schema_version": 0,
+          "attributes": {
+            "id": "zone",
+            "name": "zone",
+            "namespace": null,
+            "policy": "path \"secret/cloudflare/cloudflare_zones/nextresearch-www-record_record_id\" {\n  capabilities = [\"read\"]\n}\n"
+          },
+          "sensitive_attributes": [],
+          "private": "eyJzY2hlbWFfdmVyc2lvbiI6IjAifQ=="
+        }
+      ]
+    },
+    {
+      "module": "module.vault_rbac",
+      "mode": "managed",
+      "type": "vault_policy",
+      "name": "roles",
+      "provider": "provider[\"registry.terraform.io/hashicorp/vault\"]",
+      "instances": [
+        {
+          "index_key": "aws-operator",
+          "schema_version": 0,
+          "attributes": {
+            "id": "ssh-role-aws-operator",
+            "name": "ssh-role-aws-operator",
+            "namespace": null,
+            "policy": "# Policy for role: aws-operator\n\n# AWS dynamic credentials via Vault AWS secrets engine\n\n\n\npath \"auth/token/lookup-self\" {\n  capabilities = [\"read\"]\n}\n\npath \"auth/token/renew-self\" {\n  capabilities = [\"update\"]\n}\n\npath \"ssh/config/ca\" {\n  capabilities = [\"read\"]\n}\n"
+          },
+          "sensitive_attributes": [],
+          "private": "bnVsbA=="
+        },
+        {
+          "index_key": "deployer",
+          "schema_version": 0,
+          "attributes": {
+            "id": "ssh-role-deployer",
+            "name": "ssh-role-deployer",
+            "namespace": null,
+            "policy": "# Policy for role: deployer\n\n# Deploy access for CI/CD automation\n\n\n\npath \"auth/token/lookup-self\" {\n  capabilities = [\"read\"]\n}\n\npath \"auth/token/renew-self\" {\n  capabilities = [\"update\"]\n}\n\npath \"ssh/config/ca\" {\n  capabilities = [\"read\"]\n}\n\n\n# Access: bastion (read)\npath \"ssh/sign/ssh-bastion\" {\n  capabilities = [\"create\", \"update\"]\n}\n"
+          },
+          "sensitive_attributes": [],
+          "private": "bnVsbA=="
+        },
+        {
+          "index_key": "k8s-operator",
+          "schema_version": 0,
+          "attributes": {
+            "id": "ssh-role-k8s-operator",
+            "name": "ssh-role-k8s-operator",
+            "namespace": null,
+            "policy": "# Policy for role: k8s-operator\n\n# Read access to K8s cluster nodes via bastion\n\n\n\npath \"auth/token/lookup-self\" {\n  capabilities = [\"read\"]\n}\n\npath \"auth/token/renew-self\" {\n  capabilities = [\"update\"]\n}\n\npath \"ssh/config/ca\" {\n  capabilities = [\"read\"]\n}\n\n\n# Access: bastion (read)\npath \"ssh/sign/ssh-bastion\" {\n  capabilities = [\"create\", \"update\"]\n}\n"
+          },
+          "sensitive_attributes": [],
+          "private": "bnVsbA=="
+        },
+        {
+          "index_key": "operator",
+          "schema_version": 0,
+          "attributes": {
+            "id": "ssh-role-operator",
+            "name": "ssh-role-operator",
+            "namespace": null,
+            "policy": "# Policy for role: operator\n\n# General operations — bastion SSH as deploy user\n\n\n\npath \"auth/token/lookup-self\" {\n  capabilities = [\"read\"]\n}\n\npath \"auth/token/renew-self\" {\n  capabilities = [\"update\"]\n}\n\npath \"ssh/config/ca\" {\n  capabilities = [\"read\"]\n}\n\n\n# Access: bastion (read)\npath \"ssh/sign/ssh-bastion\" {\n  capabilities = [\"create\", \"update\"]\n}\n"
+          },
+          "sensitive_attributes": [],
+          "private": "bnVsbA=="
+        },
+        {
+          "index_key": "platform-admin",
+          "schema_version": 0,
+          "attributes": {
+            "id": "ssh-role-platform-admin",
+            "name": "ssh-role-platform-admin",
+            "namespace": null,
+            "policy": "# Policy for role: platform-admin\n\n# Full lab access — Vault admin, bastion SSH, AnyDesk, app-service, AWS\n\n\n\npath \"auth/token/lookup-self\" {\n  capabilities = [\"read\"]\n}\n\npath \"auth/token/renew-self\" {\n  capabilities = [\"update\"]\n}\n\npath \"ssh/config/ca\" {\n  capabilities = [\"read\"]\n}\n\n\n# Access: bastion (admin)\npath \"ssh/sign/ssh-bastion\" {\n  capabilities = [\"create\", \"update\"]\n}\n"
+          },
+          "sensitive_attributes": [],
+          "private": "bnVsbA=="
+        },
+        {
+          "index_key": "read-only",
+          "schema_version": 0,
+          "attributes": {
+            "id": "ssh-role-read-only",
+            "name": "ssh-role-read-only",
+            "namespace": null,
+            "policy": "# Policy for role: read-only\n\n# Read-only for monitoring and audit\n\n\n\npath \"auth/token/lookup-self\" {\n  capabilities = [\"read\"]\n}\n\npath \"auth/token/renew-self\" {\n  capabilities = [\"update\"]\n}\n\npath \"ssh/config/ca\" {\n  capabilities = [\"read\"]\n}\n\n\n# Access: bastion (read)\npath \"ssh/sign/ssh-bastion\" {\n  capabilities = [\"create\", \"update\"]\n}\n"
+          },
+          "sensitive_attributes": [],
+          "private": "bnVsbA=="
+        },
+        {
+          "index_key": "vault-admin",
+          "schema_version": 0,
+          "attributes": {
+            "id": "ssh-role-vault-admin",
+            "name": "ssh-role-vault-admin",
+            "namespace": null,
+            "policy": "# Policy for role: vault-admin\n\n# Vault administration — manage policies, auth methods, secrets engines\n\n\n\npath \"auth/token/lookup-self\" {\n  capabilities = [\"read\"]\n}\n\npath \"auth/token/renew-self\" {\n  capabilities = [\"update\"]\n}\n\npath \"ssh/config/ca\" {\n  capabilities = [\"read\"]\n}\n"
+          },
+          "sensitive_attributes": [],
+          "private": "bnVsbA=="
+        }
+      ]
+    },
+    {
+      "module": "module.vault_rbac",
+      "mode": "managed",
+      "type": "vault_ssh_secret_backend_role",
+      "name": "resources",
+      "provider": "provider[\"registry.terraform.io/hashicorp/vault\"]",
+      "instances": [
+        {
+          "index_key": "bastion",
+          "schema_version": 0,
+          "attributes": {
+            "algorithm_signer": "rsa-sha2-256",
+            "allow_bare_domains": false,
+            "allow_empty_principals": false,
+            "allow_host_certificates": false,
+            "allow_subdomains": false,
+            "allow_user_certificates": true,
+            "allow_user_key_ids": false,
+            "allowed_critical_options": "",
+            "allowed_domains": "",
+            "allowed_domains_template": false,
+            "allowed_extensions": "permit-pty,permit-port-forwarding,permit-agent-forwarding",
+            "allowed_user_key_config": [],
+            "allowed_users": "root,deploy",
+            "allowed_users_template": false,
+            "backend": "ssh",
+            "cidr_list": "",
+            "default_critical_options": {},
+            "default_extensions": {
+              "permit-pty": ""
+            },
+            "default_user": "root",
+            "default_user_template": false,
+            "id": "ssh/roles/ssh-bastion",
+            "key_id_format": "",
+            "key_type": "ca",
+            "max_ttl": "14400",
+            "name": "ssh-bastion",
+            "namespace": null,
+            "not_before_duration": "30",
+            "ttl": "7200"
+          },
+          "sensitive_attributes": [],
+          "private": "bnVsbA=="
+        }
+      ]
+    }
+  ],
+  "check_results": null
+}
