@@ -57,17 +57,24 @@ header()   { echo ""; echo -e "${BOLD}$1${NC}"; printf '─%.0s' {1..55}; echo; 
 
 # ── Parse manifest ───────────────────────────────────────
 
+# parse_manifest <section> [<section> ...]
+# Only includes users from the specified manifest sections.
+#   bastions:     vault_users service_accounts
+#   anydesk:      vault_users
+#   core-servers: vault_users core_service_accounts
+
 parse_manifest() {
-    python3 - "$MANIFEST" <<'PYEOF'
+    local sections="$*"
+    python3 - "$MANIFEST" "$sections" <<'PYEOF'
 import re, sys
+allowed = set(sys.argv[2].split())
 users = {}
 section = None
 current = None
 for line in open(sys.argv[1]):
-    # Detect top-level section
-    sm = re.match(r'^"(vault_users|service_accounts|core_service_accounts)":\s*$', line)
+    sm = re.match(r'^"([^"]+)":\s*$', line)
     if sm:
-        section = sm.group(1)
+        section = sm.group(1) if sm.group(1) in allowed else None
         current = None
         continue
     if section:
@@ -93,6 +100,7 @@ reconcile_server() {
     local name="$1"
     local target="$2"
     local use_sudo="${3:-}"
+    local sections="${4:-vault_users service_accounts}"
 
     header "SERVER: $name"
 
@@ -109,7 +117,7 @@ reconcile_server() {
         return
     fi
 
-    manifest_users=$(parse_manifest)
+    manifest_users=$(parse_manifest $sections)
 
     # Check each OS user against manifest
     while IFS= read -r user; do
@@ -151,11 +159,11 @@ echo -e "${BOLD}Linux User Reconciliation${NC}"
 echo -e "Manifest: $MANIFEST"
 printf '═%.0s' {1..55}; echo
 
-# bastion2 — SSH config: Host ssh.auto-deploy.net (port 1022, user ej, key user51)
-reconcile_server "bastion2  (ssh.auto-deploy.net)" "ssh.auto-deploy.net" "sudo"
+# bastion2 — vault_users + service_accounts (not core_service_accounts)
+reconcile_server "bastion2  (ssh.auto-deploy.net)" "ssh.auto-deploy.net" "sudo" "vault_users service_accounts"
 
-# bastion0 — SSH config: Host 192.168.2.100 (ProxyJump via bastion, user ej)
-reconcile_server "bastion0  (192.168.2.100)" "192.168.2.100" "sudo"
+# bastion0 — vault_users + service_accounts (not core_service_accounts)
+reconcile_server "bastion0  (192.168.2.100)" "192.168.2.100" "sudo" "vault_users service_accounts"
 
 # blue-anydesk — ProxyJump through bastion, password auth, passwordless sudo
 if [ -n "${anydesk_ssh_password:-}" ]; then
@@ -170,7 +178,7 @@ if [ -n "${anydesk_ssh_password:-}" ]; then
     if [ -z "$os_users" ]; then
         echo "  (could not reach server)"
     else
-        manifest_users=$(parse_manifest)
+        manifest_users=$(parse_manifest vault_users)
         while IFS= read -r user; do
             [ -z "$user" ] && continue
             manifest_status=$(echo "$manifest_users" | awk -v u="$user" '$1==u {print $2}')
@@ -215,7 +223,7 @@ if [ -n "${core_server_password:-}" ]; then
         if [ -z "$os_users" ]; then
             echo "  (could not reach server)"
         else
-            manifest_users=$(parse_manifest)
+            manifest_users=$(parse_manifest vault_users core_service_accounts)
             while IFS= read -r user; do
                 [ -z "$user" ] && continue
                 manifest_status=$(echo "$manifest_users" | awk -v u="$user" '$1==u {print $2}')
