@@ -27,6 +27,7 @@ bastions:
       ansible_become: true
       ansible_become_method: sudo
       ansible_ssh_private_key_file: ~/.ssh/user51
+      ansible_ssh_common_args: '-o ProxyJump=ssh.auto-deploy.net -o StrictHostKeyChecking=no'
 
 anydesk:
   hosts:
@@ -37,13 +38,13 @@ anydesk:
       ansible_become_method: sudo
       ansible_password: "{{ anydesk_ssh_password }}"
       ansible_ssh_common_args: '-o ProxyJump=ssh.auto-deploy.net -o StrictHostKeyChecking=no'
-    # green-anydesk:                      # down — add when back online
-    #   ansible_host: <TBD>
-    #   ansible_user: ej
-    #   ansible_become: true
-    #   ansible_become_method: sudo
-    #   ansible_password: "{{ anydesk_ssh_password }}"
-    #   ansible_ssh_common_args: '-o ProxyJump=ssh.auto-deploy.net -o StrictHostKeyChecking=no'
+  green-anydesk:                      # down — add when back online
+      ansible_host:  192.168.2.91
+      ansible_user: ej
+      ansible_become: true
+      ansible_become_method: sudo
+      ansible_password: "{{ anydesk_ssh_password }}"
+      ansible_ssh_common_args: '-o ProxyJump=ssh.auto-deploy.net -o StrictHostKeyChecking=no'
 
 core_servers:
   # util, green, blue — internal LAN servers

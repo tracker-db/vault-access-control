@@ -1,0 +1,128 @@
+# read-procedures.yaml
+# ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+# Common operations for this repo.
+# Every change: edit → commit → terraform apply → ansible-playbook
+# ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+
+# ── USERS ───────────────────────────────────────────────
+
+add_user:
+  file: vault-users.tf
+  steps:
+    - Add block with roles, email, status: "enabled"
+    - terraform apply          # creates Vault userpass account + assigns policies
+    - ansible-playbook ...     # creates OS account on all servers
+    - vault write auth/userpass/users/<name> password=<pw>   # set initial password
+
+disable_user:
+  file: vault-users.tf
+  steps:
+    - Set status: "disabled"
+    - terraform apply          # strips all Vault policies (account kept)
+    - ansible-playbook ...     # locks OS account (cannot log in, home kept)
+
+offboard_user:
+  file: vault-users.tf
+  steps:
+    - step_1:
+        change: Set status: "removed"
+        run:    terraform apply && ansible-playbook ...    # deletes OS account
+    - step_2:
+        change: Remove block entirely
+        run:    terraform apply                            # deletes Vault userpass account
+
+
+# ── SERVICE ACCOUNTS ────────────────────────────────────
+
+add_service_account:
+  file: linux-service-accounts.tf
+  steps:
+    - Add to the correct local (linux_service_accounts / core_server_service_accounts / util_service_accounts / libvirt_service_accounts)
+    - Add Ansible task in sync-os-users.yml if a new server group is needed
+    - terraform apply
+    - ansible-playbook ...
+    - vault kv put secret/service-accounts/<name>/credentials username=<name> password=<pw>
+
+remove_service_account:
+  file: linux-service-accounts.tf
+  steps:
+    - Set status: "removed"
+    - ansible-playbook ...     # deletes OS account
+    - Remove block entirely
+    - terraform apply          # removes KV path from Vault
+
+add_vault_approle:
+  file: vault-service-accounts.tf
+  steps:
+    - Add block with role, description
+    - terraform apply          # creates AppRole in Vault
+
+
+# ── PASSWORDS ───────────────────────────────────────────
+
+rotate_service_account_password:
+  steps:
+    - vault kv put secret/service-accounts/<name>/credentials username=<name> password=<new>
+    # No Terraform apply needed — Vault owns the value, not Terraform
+
+rotate_app_service_password:
+  steps:
+    - vault kv put secret/shared/app-service/credentials username=app-service password=<new>
+
+set_user_vault_password:
+  steps:
+    - vault write auth/userpass/users/<name> password=<new>
+
+
+# ── SERVERS ─────────────────────────────────────────────
+
+add_server:
+  steps:
+    - Add host to scripts/inventory.yml under the correct group
+    - Add to linux-reconcile.sh if a new group (update the server loop)
+    - scripts/configure-target-vm.sh <hostname>    # trust Vault SSH CA
+    - scripts/sync-principals.sh                   # push SSH CA principals
+    - ansible-playbook ...                         # sync users to new server
+
+add_server_to_reconcile:
+  note: For core_servers, green and blue already handled. Add new LAN servers to the core_servers loop in linux-reconcile.sh.
+
+
+# ── SSH CERTIFICATES ────────────────────────────────────
+
+sign_ssh_key:
+  steps:
+    - scripts/engineer-ssh-login.sh                # sign key against bastion role
+    # Certificate valid 8h (platform-admin) or 4h (operator)
+
+connect_to_server:
+  steps:
+    - scripts/engineer-ssh-login.sh                # sign first if cert expired
+    - ssh -i ~/.ssh/user51 <hostname>
+
+
+# ── HEALTH CHECKS ───────────────────────────────────────
+
+verify_everything:
+  steps:
+    - terraform plan                               # Vault: detects modifications to managed resources
+    - ./scripts/vault-reconcile.sh                 # Vault: detects rogue resources added outside Terraform
+    - export anydesk_ssh_password=<pw> core_server_password=<pw>
+    - ./scripts/linux-reconcile.sh                 # OS: all servers match manifest
+
+full_sync:
+  steps:
+    - terraform apply --auto-approve
+    - ansible-playbook scripts/sync-os-users.yml -i scripts/inventory.yml --extra-vars "anydesk_ssh_password=<pw> core_server_password=<pw>"
+
+
+# ── GREEN ANYDESK ────────────────────────────────────────
+
+green_anydesk_restore:
+  note: Green AnyDesk was offline — add IP to inventory when confirmed.
+  steps:
+    - Uncomment green-anydesk in scripts/inventory.yml and set ansible_host: <IP>
+    - Uncomment in scripts/linux-reconcile.sh and scripts/cleanup-rogue-users.sh
+    - ansible-playbook ...    # sync vault users to green-anydesk
+    - ./scripts/linux-reconcile.sh
