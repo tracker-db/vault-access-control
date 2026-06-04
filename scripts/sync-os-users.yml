@@ -111,6 +111,7 @@
         vault kv get -field=password secret/shared/app-service/credentials
       delegate_to: localhost
       run_once: true
+      check_mode: false
       no_log: true
       register: _vault_app_service_pass
       environment:
