@@ -79,7 +79,6 @@
         state: present
         shell: /bin/bash
         create_home: true
-        password_lock: false
       loop: "{{ service_accounts | dict2items }}"
       when: item.value.status == 'enabled'
 
@@ -179,7 +178,6 @@
         state: present
         shell: /bin/bash
         create_home: true
-        password_lock: false
       loop: "{{ util_service_accounts | dict2items }}"
       when:
         - item.value.status == 'enabled'
