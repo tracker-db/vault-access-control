@@ -149,3 +149,54 @@
       when:
         - item.value.status == 'removed'
         - item.key in ansible_facts.getent_passwd
+
+    - name: Remove bastion service accounts mistakenly present on core-servers
+      ansible.builtin.user:
+        name: "{{ item }}"
+        state: absent
+        remove: true
+        force: true
+      loop:
+        - ansible-work
+        - ansible-work-service-account
+      when: item in ansible_facts.getent_passwd
+
+# ── util only — MySQL service account ────────────────────
+- name: Ensure mysql service account on util
+  hosts: util
+  become: true
+  vars_files:
+    - users.auto.yml
+
+  pre_tasks:
+    - name: Collect existing OS accounts
+      ansible.builtin.getent:
+        database: passwd
+
+  tasks:
+    - name: Ensure mysql account exists (created by MySQL package)
+      ansible.builtin.user:
+        name: "{{ item.key }}"
+        state: present
+      loop: "{{ util_service_accounts | dict2items }}"
+      when: item.value.status == 'enabled'
+
+# ── green + blue — libvirt-qemu service account ──────────
+- name: Ensure libvirt-qemu service account on green and blue
+  hosts: green,blue
+  become: true
+  vars_files:
+    - users.auto.yml
+
+  pre_tasks:
+    - name: Collect existing OS accounts
+      ansible.builtin.getent:
+        database: passwd
+
+  tasks:
+    - name: Ensure libvirt-qemu account exists (created by libvirt package)
+      ansible.builtin.user:
+        name: "{{ item.key }}"
+        state: present
+      loop: "{{ libvirt_service_accounts | dict2items }}"
+      when: item.value.status == 'enabled'

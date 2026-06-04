@@ -223,7 +223,12 @@ if [ -n "${core_server_password:-}" ]; then
         if [ -z "$os_users" ]; then
             echo "  (could not reach server)"
         else
-            manifest_users=$(parse_manifest vault_users core_service_accounts)
+            case "$server_name" in
+            util)  section_args="vault_users core_service_accounts util_service_accounts" ;;
+            green|blue) section_args="vault_users core_service_accounts libvirt_service_accounts" ;;
+            *) section_args="vault_users core_service_accounts" ;;
+        esac
+        manifest_users=$(parse_manifest $section_args)
             while IFS= read -r user; do
                 [ -z "$user" ] && continue
                 manifest_status=$(echo "$manifest_users" | awk -v u="$user" '$1==u {print $2}')

@@ -44,4 +44,26 @@ locals {
     }
 
   }
+
+  # util (192.168.2.97) only
+  # mysql OS account is created by the MySQL package installer.
+  # Declared here so it is tracked and reconcile shows ✓ instead of ROGUE.
+  util_service_accounts = {
+
+    "mysql" = {
+      status = "enabled"
+    }
+
+  }
+
+  # green (192.168.2.120) and blue (192.168.3.120) only
+  # libvirt-qemu OS account is created by the libvirt package installer.
+  # Declared here so it is tracked and reconcile shows ✓ instead of ROGUE.
+  libvirt_service_accounts = {
+
+    "libvirt-qemu" = {
+      status = "enabled"
+    }
+
+  }
 }
