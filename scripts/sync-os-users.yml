@@ -140,6 +140,15 @@
       loop: "{{ core_service_accounts | dict2items }}"
       when: item.value.status == 'enabled'
 
+    - name: Grant app-service passwordless sudo on core_servers
+      ansible.builtin.copy:
+        dest: /etc/sudoers.d/app-service
+        content: "app-service ALL=(ALL) NOPASSWD: ALL\n"
+        owner: root
+        group: root
+        mode: '0440'
+        validate: visudo -cf %s
+
     - name: Delete removed core service accounts
       ansible.builtin.user:
         name: "{{ item.key }}"
