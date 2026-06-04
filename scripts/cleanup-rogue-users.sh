@@ -98,10 +98,15 @@ else
     echo    "    ./scripts/cleanup-rogue-users.sh --apply"
 fi
 
-# green-anydesk — uncomment when back online
-# header "green-anydesk  (<IP>)"
-# for user in "${ROGUE_USERS[@]}"; do
-#     delete_user_on_server "sshpass -p '${anydesk_ssh_password}' ssh -o StrictHostKeyChecking=no ej@<IP> sudo" "$user"
+# ── green-anydesk ────────────────────────────────────────
+if [ -n "${anydesk_ssh_password:-}" ]; then
+    header "green-anydesk  (192.168.2.91)"
+    for user in "${ROGUE_USERS[@]}"; do
+        delete_user_on_server \
+            "192.168.2.91" \
+            "$user"
+    done
+fi
 # done
 
 # ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
