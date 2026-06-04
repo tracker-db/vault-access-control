@@ -159,7 +159,7 @@ reconcile_server "bastion0  (192.168.2.100)" "192.168.2.100" "sudo"
 
 # blue-anydesk — SSH config: Host blue-anydesk (192.168.3.91, user ej, passwordless sudo)
 if [ -n "${anydesk_ssh_password:-}" ]; then
-    SSHPASS_SSH="sshpass -p '${anydesk_ssh_password}' ssh -o StrictHostKeyChecking=no -o PreferredAuthentications=password ej@192.168.3.91"
+    SSHPASS_SSH="sshpass -p '${anydesk_ssh_password}' ssh -o StrictHostKeyChecking=no -o PreferredAuthentications=password -o ProxyJump=ssh.auto-deploy.net ej@192.168.3.91"
     header "SERVER: blue-anydesk  (192.168.3.91)"
 
     os_users=$(eval "$SSHPASS_SSH 'getent passwd | awk -F: \$3>=1000&&\$3<65534{print\$1}'" \

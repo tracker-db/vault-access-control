@@ -88,7 +88,7 @@ if [ -n "${anydesk_ssh_password:-}" ]; then
     header "blue-anydesk  (192.168.3.91)"
     for user in "${ROGUE_USERS[@]}"; do
         delete_user_on_server \
-            "sshpass -p '${anydesk_ssh_password}' ssh -o StrictHostKeyChecking=no -o PreferredAuthentications=password ej@192.168.3.91 sudo" \
+            "sshpass -p '${anydesk_ssh_password}' ssh -o StrictHostKeyChecking=no -o PreferredAuthentications=password -o ProxyJump=ssh.auto-deploy.net ej@192.168.3.91 sudo" \
             "$user"
     done
 else

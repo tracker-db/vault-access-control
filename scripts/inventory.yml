@@ -38,6 +38,7 @@ anydesk:
       ansible_become: true
       ansible_become_method: sudo
       ansible_password: "{{ anydesk_ssh_password }}"
+      ansible_ssh_common_args: '-o ProxyJump=ssh.auto-deploy.net -o StrictHostKeyChecking=no'
     # green-anydesk:                      # down — add when back online
     #   ansible_host: <TBD>
     #   ansible_user: ej
