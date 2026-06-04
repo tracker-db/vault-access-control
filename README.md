@@ -26,7 +26,7 @@ If it's not in this repo, it doesn't exist.
 | bastions | bastion2 (primary — Ansible runs here) | ssh.auto-deploy.net:1022 |
 | bastions | bastion0 | 192.168.2.100 |
 | anydesk | blue-anydesk | 192.168.3.91 |
-| anydesk | green-anydesk | TBD (was offline) |
+| anydesk | green-anydesk | 192.168.2.91 |
 | core_servers | util | 192.168.2.97 |
 | core_servers | green | 192.168.2.120 |
 | core_servers | blue | 192.168.3.120 |

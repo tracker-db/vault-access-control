@@ -25,12 +25,8 @@ disable_user:
 offboard_user:
   file: vault-users.tf
   steps:
-    - step_1:
-        change: Set status: "removed"
-        run:    terraform apply && ansible-playbook ...    # deletes OS account
-    - step_2:
-        change: Remove block entirely
-        run:    terraform apply                            # deletes Vault userpass account
+    - "step 1: Set status: removed → terraform apply + ansible-playbook (deletes OS account)"
+    - "step 2: Remove block entirely → terraform apply (deletes Vault userpass account)"
 
 
 # ── SERVICE ACCOUNTS ────────────────────────────────────
@@ -119,10 +115,6 @@ full_sync:
 
 # ── GREEN ANYDESK ────────────────────────────────────────
 
-green_anydesk_restore:
-  note: Green AnyDesk was offline — add IP to inventory when confirmed.
-  steps:
-    - Uncomment green-anydesk in scripts/inventory.yml and set ansible_host: <IP>
-    - Uncomment in scripts/linux-reconcile.sh and scripts/cleanup-rogue-users.sh
-    - ansible-playbook ...    # sync vault users to green-anydesk
-    - ./scripts/linux-reconcile.sh
+green_anydesk:
+  ip: 192.168.2.91
+  note: Same setup as blue-anydesk — user ej, password 88888888, passwordless sudo, ProxyJump.

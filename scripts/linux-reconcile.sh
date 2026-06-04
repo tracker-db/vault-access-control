@@ -202,8 +202,37 @@ else
     echo    "    export anydesk_ssh_password=<password>"
 fi
 
-# green-anydesk — uncomment when back online
-# reconcile_server "green-anydesk  (<IP>)" "<IP>" "sudo"
+if [ -n "${anydesk_ssh_password:-}" ]; then
+    export SSHPASS="${anydesk_ssh_password}"
+    GA_SSH="sshpass -e ssh -o StrictHostKeyChecking=no -o PreferredAuthentications=password -o ProxyJump=ssh.auto-deploy.net ej@192.168.2.91"
+
+    header "SERVER: green-anydesk  (192.168.2.91)"
+
+    os_users=$($GA_SSH "getent passwd | awk -F: '\$3 >= 1000 && \$3 < 65534 {print \$1}'" \
+        2>/dev/null | sort || echo "")
+
+    if [ -z "$os_users" ]; then
+        echo "  (could not reach server)"
+    else
+        manifest_users=$(parse_manifest vault_users)
+        while IFS= read -r user; do
+            [ -z "$user" ] && continue
+            manifest_status=$(echo "$manifest_users" | awk -v u="$user" '$1==u {print $2}')
+            if [ -z "$manifest_status" ]; then
+                rogue "$user"
+            elif [ "$manifest_status" = "enabled" ]; then
+                ok "$user  (enabled)"
+            else
+                lock=$($GA_SSH "sudo passwd -S ${user} 2>/dev/null | awk '{print \$2}'" 2>/dev/null || echo "unknown")
+                if echo "$lock" | grep -q '^L'; then
+                    ok "$user  ($manifest_status — locked ✓)"
+                else
+                    unlocked "$user  ($manifest_status in manifest but account is active)"
+                fi
+            fi
+        done <<< "$os_users"
+    fi
+fi
 
 # ── core_servers — password auth, ProxyJump ──────────────
 if [ -n "${core_server_password:-}" ]; then
