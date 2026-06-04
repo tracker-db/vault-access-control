@@ -66,8 +66,9 @@ ansible-playbook scripts/sync-os-users.yml -i scripts/inventory.yml \
 ./scripts/linux-reconcile.sh
 ```
 
-See `read-procedures.yaml` for all common operations.
-See `read-how-this-works.md` for architecture.
+**→ [Procedures](docs/read-procedures.md)** — adding users, service accounts, passwords, servers, SSH, health checks
+
+**→ [How this works](docs/read-how-this-works.md)** — architecture, Vault model, Terraform/Ansible design
 
 ---
 
