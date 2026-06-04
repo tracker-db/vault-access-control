@@ -17,9 +17,14 @@
 #   email           required  user's email address
 #   status          required  "enabled" or "disabled" — controls Vault access
 #   extra_policies  optional  legacy custom policies not yet in a role
-#   authorized_keys optional  list of SSH public keys deployed to ~/.ssh/authorized_keys
-#                             on all servers — use for phones/devices that cannot run
-#                             the Vault cert signing workflow. Revoke by removing the key.
+#
+# Device SSH keys (phones, tablets, secondary machines):
+#   Stored in Vault KV — NOT in this file.
+#   Path: secret/users/<username>/authorized_keys
+#   Each field = one device: phone="ssh-rsa ...", mac="ssh-ed25519 ..."
+#   Ansible reads from Vault at runtime and deploys to ~/.ssh/authorized_keys.
+#   To add: vault kv patch secret/users/ej/authorized_keys newdevice="ssh-rsa ..."
+#   To revoke: vault kv patch secret/users/ej/authorized_keys  (remove the field)
 #
 # Users NEVER reference servers directly. They get roles.
 # Roles define what servers they can access (see roles.tf).
@@ -33,9 +38,6 @@ locals {
       email          = "ej@lab.internal"
       status         = "enabled"
       extra_policies = ["root-equivalent"]
-      authorized_keys = [
-        "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQDfwNRTFodX3nu1uV2YPCufPwAUeCsDo5OPcsiKYJCK/2xy3dV9IuFrQnVyHhN7PjBuCQqVqbry/Wyai9LSmjqKVIfghDXdxBYe24dcn5FMR9eRmEJuFHbjmCygs1P/P9eWC0xHAFB/gCEdQ+tsuWapNyb7aDaZWX5yZB3HrFrDlLR2/LlHTrlQNeDF7XacldK57OOc+S3KOw0tYrM1cWm+vWxM+rOIq3qiadgDjdYeWHLFuriOcLHK3g0qMvZK8apQZIlZil13D5ZeKO/3VJv1VEP5yAzuKy7CZD0fmNMsqoKGthfRhVOpThMnsJwydiAznoo1uj53xo8Xiq5OdI0l ej-phone",
-      ]
     }
     "ejbest" = {
       roles  = ["platform-admin"]
