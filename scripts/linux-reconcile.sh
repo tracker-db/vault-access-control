@@ -157,12 +157,14 @@ reconcile_server "bastion2  (ssh.auto-deploy.net)" "ssh.auto-deploy.net" "sudo"
 # bastion0 — SSH config: Host 192.168.2.100 (ProxyJump via bastion, user ej)
 reconcile_server "bastion0  (192.168.2.100)" "192.168.2.100" "sudo"
 
-# blue-anydesk — SSH config: Host blue-anydesk (192.168.3.91, user ej, passwordless sudo)
+# blue-anydesk — ProxyJump through bastion, password auth, passwordless sudo
 if [ -n "${anydesk_ssh_password:-}" ]; then
-    SSHPASS_SSH="sshpass -p '${anydesk_ssh_password}' ssh -o StrictHostKeyChecking=no -o PreferredAuthentications=password -o ProxyJump=ssh.auto-deploy.net ej@192.168.3.91"
+    export SSHPASS="${anydesk_ssh_password}"
+    AD_SSH="sshpass -e ssh -o StrictHostKeyChecking=no -o PreferredAuthentications=password -o ProxyJump=ssh.auto-deploy.net ej@192.168.3.91"
+
     header "SERVER: blue-anydesk  (192.168.3.91)"
 
-    os_users=$(eval "$SSHPASS_SSH 'getent passwd | awk -F: \$3>=1000&&\$3<65534{print\$1}'" \
+    os_users=$($AD_SSH "getent passwd | awk -F: '\$3 >= 1000 && \$3 < 65534 {print \$1}'" \
         2>/dev/null | sort || echo "")
 
     if [ -z "$os_users" ]; then
@@ -177,7 +179,7 @@ if [ -n "${anydesk_ssh_password:-}" ]; then
             elif [ "$manifest_status" = "enabled" ]; then
                 ok "$user  (enabled)"
             else
-                lock=$(eval "$SSHPASS_SSH 'sudo passwd -S ${user} 2>/dev/null | awk {print\$2}'" 2>/dev/null || echo "unknown")
+                lock=$($AD_SSH "sudo passwd -S ${user} 2>/dev/null | awk '{print \$2}'" 2>/dev/null || echo "unknown")
                 if echo "$lock" | grep -q '^L'; then
                     ok "$user  ($manifest_status — locked ✓)"
                 else
