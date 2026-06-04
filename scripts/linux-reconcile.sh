@@ -61,16 +61,24 @@ parse_manifest() {
     python3 - "$MANIFEST" <<'PYEOF'
 import re, sys
 users = {}
+section = None
 current = None
 for line in open(sys.argv[1]):
-    m = re.match(r'^  "([^"]+)":\s*$', line)
-    if m:
-        current = m.group(1)
-    elif current:
-        s = re.search(r'"status":\s*"([^"]+)"', line)
-        if s:
-            users[current] = s.group(1)
-            current = None
+    # Detect top-level section
+    sm = re.match(r'^"(vault_users|service_accounts)":\s*$', line)
+    if sm:
+        section = sm.group(1)
+        current = None
+        continue
+    if section:
+        um = re.match(r'^  "([^"]+)":\s*$', line)
+        if um:
+            current = um.group(1)
+        elif current:
+            s = re.search(r'"status":\s*"([^"]+)"', line)
+            if s:
+                users[current] = s.group(1)
+                current = None
 for u, s in sorted(users.items()):
     print(u, s)
 PYEOF

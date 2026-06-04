@@ -1,28 +1,30 @@
-# os-users.tf
+# linux-users.tf
 # ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-# OS User Sync — Terraform writes the manifest, Ansible enforces it
+# OS User Sync — Terraform writes the manifest, Ansible enforces it.
 #
-# Terraform is the source of truth (users.tf).
-# Ansible reads the generated manifest and enforces OS state on each server.
+# Two sources feed the manifest:
+#   vault_users          — from vault-users.tf (Vault + all 3 servers)
+#   service_accounts     — from linux-service-accounts.tf (bastions only)
 #
-# Two-step workflow:
-#
-#   Step 1 — Workstation: review and apply
+# Workflow:
+#   Step 1 — Workstation:
 #     terraform plan
 #     terraform apply    ← updates Vault + writes manifest + copies to bastion2
 #
-#   Step 2 — SSH into bastion2, run Ansible
-#     ssh -i ~/.ssh/id_rsa -p 1022 root@ssh.auto-deploy.net
-#
+#   Step 2 — SSH into bastion2, run Ansible:
 #     ansible-playbook sync-os-users.yml -i inventory.yml \
 #       --extra-vars "anydesk_ssh_password=<password>" --check --diff
-#
 #     ansible-playbook sync-os-users.yml -i inventory.yml \
 #       --extra-vars "anydesk_ssh_password=<password>"
 #
-# What Ansible enforces per server:
-#   status = "enabled"  → create account (if missing), ensure unlocked
-#   status = "disabled" → lock account (if exists), skip if not present
+# Ansible enforces per server:
+#   vault_users:
+#     enabled  → create + unlock on all servers
+#     disabled → lock if exists
+#     removed  → userdel -r if exists
+#   service_accounts:
+#     enabled  → create + unlock on bastions only
+#     removed  → userdel -r on bastions only
 # ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
 resource "local_file" "ansible_users" {
@@ -34,11 +36,14 @@ resource "local_file" "ansible_users" {
       for username, user in local.users :
       username => { status = try(user.status, "enabled") }
     }
+    service_accounts = {
+      for username, sa in local.linux_service_accounts :
+      username => { status = sa.status }
+    }
   })
 }
 
 # Auto-copy manifest to bastion2 whenever it changes.
-# Ansible runs from bastion2 — the file must be there before running the playbook.
 resource "null_resource" "copy_manifest_to_bastion2" {
   triggers = {
     manifest_hash = local_file.ansible_users.id
