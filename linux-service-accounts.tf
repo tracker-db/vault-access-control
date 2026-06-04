@@ -46,23 +46,32 @@ locals {
   }
 
   # util (192.168.2.97) only
-  # mysql OS account is created by the MySQL package installer.
-  # Declared here so it is tracked and reconcile shows ✓ instead of ROGUE.
+  # type = "package"  — created by package installer, do not override shell/home
+  # type = "service"  — created and fully managed by Ansible
   util_service_accounts = {
 
     "mysql" = {
       status = "enabled"
+      type   = "package"
+    }
+    "ansible-work" = {
+      status = "enabled"
+      type   = "service"
+    }
+    "ansible-work-service-account" = {
+      status = "enabled"
+      type   = "service"
     }
 
   }
 
   # green (192.168.2.120) and blue (192.168.3.120) only
-  # libvirt-qemu OS account is created by the libvirt package installer.
-  # Declared here so it is tracked and reconcile shows ✓ instead of ROGUE.
+  # libvirt-qemu is created by the libvirt package installer.
   libvirt_service_accounts = {
 
     "libvirt-qemu" = {
       status = "enabled"
+      type   = "package"
     }
 
   }

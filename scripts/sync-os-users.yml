@@ -151,19 +151,8 @@
         - item.value.status == 'removed'
         - item.key in ansible_facts.getent_passwd
 
-    - name: Remove bastion service accounts mistakenly present on core-servers
-      ansible.builtin.user:
-        name: "{{ item }}"
-        state: absent
-        remove: true
-        force: true
-      loop:
-        - ansible-work
-        - ansible-work-service-account
-      when: item in ansible_facts.getent_passwd
-
-# ── util only — MySQL service account ────────────────────
-- name: Ensure mysql service account on util
+# ── util only ────────────────────────────────────────────
+- name: Sync service accounts on util
   hosts: util
   become: true
   vars_files:
@@ -175,15 +164,29 @@
         database: passwd
 
   tasks:
-    - name: Ensure mysql account exists (created by MySQL package)
+    - name: Create and manage service accounts on util
+      ansible.builtin.user:
+        name: "{{ item.key }}"
+        state: present
+        shell: /bin/bash
+        create_home: true
+        password_lock: false
+      loop: "{{ util_service_accounts | dict2items }}"
+      when:
+        - item.value.status == 'enabled'
+        - item.value.type == 'service'
+
+    - name: Verify package-managed accounts on util (mysql — do not override shell)
       ansible.builtin.user:
         name: "{{ item.key }}"
         state: present
       loop: "{{ util_service_accounts | dict2items }}"
-      when: item.value.status == 'enabled'
+      when:
+        - item.value.status == 'enabled'
+        - item.value.type == 'package'
 
-# ── green + blue — libvirt-qemu service account ──────────
-- name: Ensure libvirt-qemu service account on green and blue
+# ── green + blue — libvirt-qemu ──────────────────────────
+- name: Verify libvirt-qemu service account on green and blue
   hosts: green,blue
   become: true
   vars_files:
@@ -195,9 +198,11 @@
         database: passwd
 
   tasks:
-    - name: Ensure libvirt-qemu account exists (created by libvirt package)
+    - name: Verify package-managed accounts (libvirt-qemu — do not override shell)
       ansible.builtin.user:
         name: "{{ item.key }}"
         state: present
       loop: "{{ libvirt_service_accounts | dict2items }}"
-      when: item.value.status == 'enabled'
+      when:
+        - item.value.status == 'enabled'
+        - item.value.type == 'package'
