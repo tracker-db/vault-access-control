@@ -32,7 +32,7 @@ ROGUE_USERS=(
   kishor lucky mangash manish miguel nandha neel
   niam nirav omen pavan peterlight ramu ravi
   richard roy saif santosh sergej solomon
-  taimour test testuser tim vikhil
+  taimour test testuser tim ubuntu vikhil
 )
 
 header() { echo ""; echo -e "${BOLD}$1${NC}"; printf '─%.0s' {1..55}; echo; }
