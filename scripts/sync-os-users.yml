@@ -95,8 +95,8 @@
         - item.key in ansible_facts.getent_passwd
 
 # ── Core servers — util, green, blue ─────────────────────
-- name: Sync users and app-service on core-servers
-  hosts: core-servers
+- name: Sync users and app-service on core_servers
+  hosts: core_servers
   become: true
   vars_files:
     - users.auto.yml
@@ -119,7 +119,7 @@
         VAULT_TOKEN: "{{ lookup('env', 'VAULT_TOKEN') }}"
 
   tasks:
-    - name: Create and unlock vault users on core-servers
+    - name: Create and unlock vault users on core_servers
       ansible.builtin.user:
         name: "{{ item.key }}"
         state: present

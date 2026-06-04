@@ -4,11 +4,11 @@
 # Groups:
 #   bastions     — bastion2, bastion0 (key auth, user ej)
 #   anydesk      — blue-anydesk (password auth, ProxyJump)
-#   core-servers — util, green, blue (password auth, ProxyJump)
+#   core_servers — util, green, blue (password auth, ProxyJump)
 #
 # Runtime variables:
 #   anydesk_ssh_password   — ej password on anydesk servers
-#   core_server_password   — ej password on core-servers
+#   core_server_password   — ej password on core_servers
 #
 #   ansible-playbook sync-os-users.yml -i inventory.yml \
 #     --extra-vars "anydesk_ssh_password=<pw> core_server_password=<pw>"
@@ -45,7 +45,7 @@ anydesk:
     #   ansible_password: "{{ anydesk_ssh_password }}"
     #   ansible_ssh_common_args: '-o ProxyJump=ssh.auto-deploy.net -o StrictHostKeyChecking=no'
 
-core-servers:
+core_servers:
   # util, green, blue — internal LAN servers
   # ej is current service account (transitioning to app-service)
   # Password: core_server_password (passed at runtime)

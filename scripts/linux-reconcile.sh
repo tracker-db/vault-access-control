@@ -61,7 +61,7 @@ header()   { echo ""; echo -e "${BOLD}$1${NC}"; printf '─%.0s' {1..55}; echo; 
 # Only includes users from the specified manifest sections.
 #   bastions:     vault_users service_accounts
 #   anydesk:      vault_users
-#   core-servers: vault_users core_service_accounts
+#   core_servers: vault_users core_service_accounts
 
 parse_manifest() {
     local sections="$*"
@@ -205,7 +205,7 @@ fi
 # green-anydesk — uncomment when back online
 # reconcile_server "green-anydesk  (<IP>)" "<IP>" "sudo"
 
-# ── core-servers — password auth, ProxyJump ──────────────
+# ── core_servers — password auth, ProxyJump ──────────────
 if [ -n "${core_server_password:-}" ]; then
     export SSHPASS="${core_server_password}"
     CS_SSH_OPTS="-o StrictHostKeyChecking=no -o PreferredAuthentications=password -o ProxyJump=ssh.auto-deploy.net"
@@ -249,7 +249,7 @@ if [ -n "${core_server_password:-}" ]; then
     done
 else
     echo ""
-    echo -e "  ${YELLOW}SKIPPED core-servers${NC} — set core_server_password to include them:"
+    echo -e "  ${YELLOW}SKIPPED core_servers${NC} — set core_server_password to include them:"
     echo    "    export core_server_password=<password>"
 fi
 

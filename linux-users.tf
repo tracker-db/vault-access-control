@@ -46,11 +46,11 @@ resource "local_file" "ansible_users" {
     }
     util_service_accounts = {
       for username, sa in local.util_service_accounts :
-      username => { status = sa.status }
+      username => { status = sa.status, type = sa.type }
     }
     libvirt_service_accounts = {
       for username, sa in local.libvirt_service_accounts :
-      username => { status = sa.status }
+      username => { status = sa.status, type = sa.type }
     }
   })
 }
