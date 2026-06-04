@@ -34,10 +34,7 @@ locals {
       status         = "enabled"
       extra_policies = ["root-equivalent"]
       authorized_keys = [
-        # Paste phone public key here — Ansible deploys it to ~/.ssh/authorized_keys
-        # on all servers. Phone connects directly with its private key, no Vault needed.
-        # To revoke: remove the line, apply, run Ansible.
-        # "ssh-ed25519 AAAA... ej-phone",
+        "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQDfwNRTFodX3nu1uV2YPCufPwAUeCsDo5OPcsiKYJCK/2xy3dV9IuFrQnVyHhN7PjBuCQqVqbry/Wyai9LSmjqKVIfghDXdxBYe24dcn5FMR9eRmEJuFHbjmCygs1P/P9eWC0xHAFB/gCEdQ+tsuWapNyb7aDaZWX5yZB3HrFrDlLR2/LlHTrlQNeDF7XacldK57OOc+S3KOw0tYrM1cWm+vWxM+rOIq3qiadgDjdYeWHLFuriOcLHK3g0qMvZK8apQZIlZil13D5ZeKO/3VJv1VEP5yAzuKy7CZD0fmNMsqoKGthfRhVOpThMnsJwydiAznoo1uj53xo8Xiq5OdI0l ej-phone",
       ]
     }
     "ejbest" = {
