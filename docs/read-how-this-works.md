@@ -1,4 +1,65 @@
-# How Terraform and Vault Work Together
+# How This Repo Works
+
+## Architecture — three layers
+
+```
+┌─────────────────────────────────────────────────────────┐
+│                    vault-users.tf                        │
+│            linux-service-accounts.tf                     │
+│                  (source of truth)                       │
+└───────────────────┬──────────────┬──────────────────────┘
+                    │              │
+          terraform apply    terraform apply
+                    │              │
+                    ▼              ▼
+          ┌─────────────┐   ┌───────────────────────┐
+          │    VAULT    │   │   users.auto.yml       │
+          │  userpass   │   │   (manifest — written  │
+          │  accounts   │   │    by Terraform,       │
+          │  policies   │   │    read by Ansible)    │
+          └─────────────┘   └──────────┬────────────┘
+                                       │
+                               ansible-playbook
+                                       │
+                    ┌──────────────────┼──────────────────┐
+                    ▼                  ▼                   ▼
+             bastions           core-servers          anydesk
+          (bastion0/2)      (util/green/blue)    (blue/green-anydesk)
+          OS user accounts   OS user accounts    OS user accounts
+```
+
+**Terraform** manages Vault — userpass accounts, policies, SSH CA roles, mounts, auth backends.
+
+**Ansible** manages Linux OS user accounts on every server — reads the manifest Terraform generates, enforces what exists, is locked, is deleted.
+
+**The manifest** (`scripts/users.auto.yml`) is the bridge — Terraform writes it on every apply, Ansible reads it on every run. It is never edited by hand.
+
+---
+
+## What runs when
+
+| Command | What it does |
+|---|---|
+| `terraform apply` | Updates Vault + writes manifest + copies manifest to bastion2 |
+| `ansible-playbook sync-os-users.yml` | Enforces OS user state on all servers from the manifest |
+| `./scripts/vault-reconcile.sh` | Detects anything in Vault NOT managed by Terraform |
+| `./scripts/linux-reconcile.sh` | Detects any OS user on any server NOT in the manifest |
+
+Run all four together for complete verification. `terraform plan` + `vault-reconcile.sh` covers Vault. `linux-reconcile.sh` covers the servers.
+
+---
+
+## What Ansible enforces per user
+
+| Status in manifest | What Ansible does |
+|---|---|
+| `enabled` | Creates account if missing. Shell `/bin/bash`, home created. |
+| `disabled` | Locks account (`passwd -L`) if it exists. Does not delete. |
+| `removed` | Deletes account + home dir (`userdel -rf`) if it exists. |
+
+Service accounts follow the same pattern. Package-managed accounts (`mysql`, `libvirt-qemu`) are verified to exist but Ansible never overrides their shell or home directory.
+
+---
 
 ## The two things Terraform can manage in Vault
 
@@ -15,16 +76,16 @@ This repo manages both, but **not all mounts have their secrets managed here**.
 
 ## What Terraform will and will not touch on `terraform apply`
 
-### Terraform WILL write these secrets (declared in `secrets.tf`)
+### Terraform creates these KV paths (declared in `vault-secrets.tf`)
 
 ```
-secret/shared/anydesk/server-1        ← anydesk IDs and passwords
-secret/shared/anydesk/server-2        ← anydesk IDs and passwords
-secret/shared/app-service/credentials ← shared lab username and password
+secret/shared/anydesk/server-1
+secret/shared/anydesk/server-2
+secret/shared/app-service/credentials
+secret/service-accounts/<name>/credentials   (one per OS service account)
 ```
 
-These values come from `secrets.auto.tfvars` (a file that lives only on the local
-machine, is never committed to git, and is backed up via iCloud and Time Machine).
+Terraform creates the paths. **Values are set directly in Vault** — never through Terraform variables or files on disk. There is no `secrets.auto.tfvars`.
 
 ### Terraform will NOT touch the contents of any other mount
 
@@ -59,16 +120,16 @@ are owned by their applications or teams.
 
 ## Three patterns — which one applies to each mount
 
-### Pattern 1 — Terraform owns the full value
+### Pattern 1 — Terraform owns the path, Vault owns the value
 
-Used for: `secret/shared/anydesk/*` and `secret/shared/app-service/*`
+Used for: `secret/shared/anydesk/*`, `secret/shared/app-service/*`, `secret/service-accounts/*`
 
-- Secret values are stored in `secrets.auto.tfvars` on the local machine
-- Terraform writes them into Vault on every `terraform apply`
-- Values are stored in the Terraform state file (marked sensitive, never printed)
-- The state file is at `/opt/terraform/state/user-access.tfstate`, backed up via iCloud
+- Terraform creates the KV path structure (`lifecycle { ignore_changes = [data_json] }`)
+- Values are set directly via `vault kv put` — no files, no variables
+- `terraform apply` never prompts for or overwrites values
+- To rotate: `vault kv put secret/service-accounts/<name>/credentials password=<new>`
 
-Best for: bootstrap credentials that the platform team owns and controls.
+Best for: all credentials in this environment.
 
 ### Pattern 2 — Terraform owns the mount, not the contents
 
@@ -134,35 +195,27 @@ transit/           Encryption as a service
 
 ## How to add a new secret that Terraform should manage
 
-1. Add a `variable` block to `secrets.tf`:
-
-```hcl
-variable "my_new_secret" {
-  description = "Description of what this is"
-  type        = string
-  sensitive   = true
-}
-```
-
-2. Add a `vault_kv_secret_v2` resource to `secrets.tf`:
+1. Add a `vault_kv_secret_v2` resource to `vault-secrets.tf` with `ignore_changes`:
 
 ```hcl
 resource "vault_kv_secret_v2" "my_new_secret" {
   mount     = vault_mount.kv.path
   name      = "shared/my-service/credentials"
-  data_json = jsonencode({
-    password = var.my_new_secret
-  })
+  data_json = jsonencode({ username = "my-service" })
+
+  lifecycle {
+    ignore_changes = [data_json]
+  }
 }
 ```
 
-3. Add the real value to `secrets.auto.tfvars` (never commit this file):
+2. Run `terraform apply` — Terraform creates the KV path.
 
-```hcl
-my_new_secret = "the-real-value"
+3. Set the actual value directly in Vault (no files, no variables):
+
+```bash
+vault kv put secret/shared/my-service/credentials username=my-service password=<value>
 ```
-
-4. Run `terraform apply` — Terraform writes the value to Vault.
 
 ---
 
@@ -205,11 +258,10 @@ re-imported. No Vault data is lost if the state file is lost.
 
 | Question | Answer |
 |----------|--------|
-| Will `terraform apply` overwrite existing Vault secrets? | Only the 3 secrets declared in `secrets.tf`. Everything else is untouched. |
-| Are secret values stored in this git repo? | No. Values are in `secrets.auto.tfvars` which is gitignored. |
-| Are secret values in the state file? | Yes — the 3 managed secrets are in the state file (not in git). |
+| Will `terraform apply` overwrite existing Vault secrets? | No. KV resources use `ignore_changes = [data_json]`. Terraform creates paths, never overwrites values. |
+| Are secret values stored in this git repo? | No. Values are set directly in Vault via `vault kv put`. No files on disk. |
+| Are secret values in the state file? | No. `ignore_changes` means Terraform never reads the values into state. |
 | Can I store a new secret in Vault without Terraform knowing? | Yes. Write directly to Vault. Terraform will never see it unless you declare and import it. |
-| What if I want Terraform to manage a secret already in Vault? | Import it (`terraform import`), add it to `secrets.tf`, add the value to `secrets.auto.tfvars`. |
 | Who owns the secrets in `argo-cd/`, `espch/`, etc.? | Their respective applications and teams. This repo only governs access (policies), not content. |
 
 ---
