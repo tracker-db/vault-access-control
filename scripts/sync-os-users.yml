@@ -99,6 +99,7 @@
       delegate_to: localhost
       run_once: true
       check_mode: false
+      changed_when: false
       no_log: true
       register: _vault_app_service_pass
       environment:
@@ -121,6 +122,7 @@
         shell: /bin/bash
         create_home: true
         password: "{{ _vault_app_service_pass.stdout | password_hash('sha512') }}"
+        update_password: on_create
       loop: "{{ core_service_accounts | dict2items | selectattr('value.status', 'equalto', 'enabled') | list }}"
 
     - name: Grant app-service passwordless sudo
