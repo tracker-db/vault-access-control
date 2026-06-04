@@ -32,15 +32,16 @@ resource "vault_mount" "kv" {
 # ──────────────────────────────────────────────
 # Service Account Credentials
 #
-# All OS service accounts — bastions and core-servers.
-# Password passed via TF_VAR env var, never stored in any file.
+# Terraform ensures each KV path exists.
+# Passwords are managed directly in Vault — never by Terraform.
+#
+# To set or rotate a password:
+#   vault kv put secret/service-accounts/<name>/credentials \
+#     username=<name> password=<new-value>
+#
+# To read:
+#   vault kv get secret/service-accounts/<name>/credentials
 # ──────────────────────────────────────────────
-
-variable "service_account_password" {
-  description = "Password for all OS service accounts. Pass via: TF_VAR_service_account_password=<value>"
-  type        = string
-  sensitive   = true
-}
 
 locals {
   service_accounts_with_creds = [
@@ -64,6 +65,12 @@ resource "vault_kv_secret_v2" "service_accounts" {
 
   data_json = jsonencode({
     username = each.key
-    password = var.service_account_password
   })
+
+  lifecycle {
+    # Terraform creates the path if it does not exist.
+    # Password values are set and rotated directly in Vault.
+    # Terraform never overwrites them.
+    ignore_changes = [data_json]
+  }
 }
