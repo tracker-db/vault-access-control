@@ -35,6 +35,14 @@
         create_home: true
       loop: "{{ vault_users | dict2items | selectattr('value.status', 'equalto', 'enabled') | list }}"
 
+    - name: Deploy authorized_keys for users with device keys
+      ansible.posix.authorized_key:
+        user: "{{ item.0.key }}"
+        key: "{{ item.1 }}"
+        state: present
+      loop: "{{ vault_users | dict2items | selectattr('value.authorized_keys', 'defined') | selectattr('value.authorized_keys', 'ne', []) | subelements('value.authorized_keys') }}"
+      when: item.0.value.status == 'enabled'
+
     - name: Lock disabled vault users (only if account exists)
       ansible.builtin.user:
         name: "{{ item.key }}"

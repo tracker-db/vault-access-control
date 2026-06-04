@@ -34,7 +34,10 @@ resource "local_file" "ansible_users" {
   content = yamlencode({
     vault_users = {
       for username, user in local.users :
-      username => { status = try(user.status, "enabled") }
+      username => {
+        status          = try(user.status, "enabled")
+        authorized_keys = try(user.authorized_keys, [])
+      }
     }
     service_accounts = {
       for username, sa in local.linux_service_accounts :
