@@ -65,7 +65,7 @@ section = None
 current = None
 for line in open(sys.argv[1]):
     # Detect top-level section
-    sm = re.match(r'^"(vault_users|service_accounts)":\s*$', line)
+    sm = re.match(r'^"(vault_users|service_accounts|core_service_accounts)":\s*$', line)
     if sm:
         section = sm.group(1)
         current = None
@@ -196,6 +196,49 @@ fi
 
 # green-anydesk — uncomment when back online
 # reconcile_server "green-anydesk  (<IP>)" "<IP>" "sudo"
+
+# ── core-servers — password auth, ProxyJump ──────────────
+if [ -n "${core_server_password:-}" ]; then
+    export SSHPASS="${core_server_password}"
+    CS_SSH_OPTS="-o StrictHostKeyChecking=no -o PreferredAuthentications=password -o ProxyJump=ssh.auto-deploy.net"
+
+    for server_info in "util:192.168.2.97" "green:192.168.2.120" "blue:192.168.3.120"; do
+        server_name="${server_info%%:*}"
+        server_ip="${server_info##*:}"
+
+        CS_SSH="sshpass -e ssh $CS_SSH_OPTS ej@${server_ip}"
+        header "SERVER: ${server_name}  (${server_ip})"
+
+        os_users=$($CS_SSH "getent passwd | awk -F: '\$3 >= 1000 && \$3 < 65534 {print \$1}'" \
+            2>/dev/null | sort || echo "")
+
+        if [ -z "$os_users" ]; then
+            echo "  (could not reach server)"
+        else
+            manifest_users=$(parse_manifest)
+            while IFS= read -r user; do
+                [ -z "$user" ] && continue
+                manifest_status=$(echo "$manifest_users" | awk -v u="$user" '$1==u {print $2}')
+                if [ -z "$manifest_status" ]; then
+                    rogue "$user"
+                elif [ "$manifest_status" = "enabled" ]; then
+                    ok "$user  (enabled)"
+                else
+                    lock=$($CS_SSH "sudo passwd -S ${user} 2>/dev/null | awk '{print \$2}'" 2>/dev/null || echo "unknown")
+                    if echo "$lock" | grep -q '^L'; then
+                        ok "$user  ($manifest_status — locked ✓)"
+                    else
+                        unlocked "$user  ($manifest_status in manifest but account is active)"
+                    fi
+                fi
+            done <<< "$os_users"
+        fi
+    done
+else
+    echo ""
+    echo -e "  ${YELLOW}SKIPPED core-servers${NC} — set core_server_password to include them:"
+    echo    "    export core_server_password=<password>"
+fi
 
 # ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 echo ""

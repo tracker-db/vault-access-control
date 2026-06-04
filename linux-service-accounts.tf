@@ -1,21 +1,22 @@
 # linux-service-accounts.tf
 # ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-# OS-ONLY SERVICE ACCOUNTS — Linux accounts on bastion servers.
+# OS-ONLY SERVICE ACCOUNTS
 #
-# These accounts are NOT in Vault userpass and must NEVER be
-# given Vault access. They exist solely for OS-level automation.
+# These accounts are NOT in Vault userpass and must NEVER
+# be given Vault access. OS automation only.
 #
-# Servers: bastion0 and bastion2 only — NOT on anydesk servers.
-#
-# To add:    Add a block here, apply, run Ansible.
+# To add:    Add a block, apply, run Ansible.
 # To remove: Set status = "removed", apply, run Ansible,
 #            then delete the block.
 #
-# Accounts:
-#   ansible-job-user          Ansible job runner automation
-#   ansible-work              Ansible worker process account
-#   ansible-work-service-account  Ansible service account for pipelines
-#   auto-deploy               Automated deployment runner
+# linux_service_accounts  — bastions only
+#   ansible-job-user, ansible-work, ansible-work-service-account,
+#   auto-deploy
+#
+# core_server_service_accounts  — core-servers only (util, green, blue)
+#   app-service  — shared service account replacing ej on core-servers
+#                  Password managed in Vault KV:
+#                  secret/shared/app-service/credentials
 # ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
 locals {
@@ -31,6 +32,14 @@ locals {
       status = "enabled"
     }
     "auto-deploy" = {
+      status = "enabled"
+    }
+
+  }
+
+  core_server_service_accounts = {
+
+    "app-service" = {
       status = "enabled"
     }
 

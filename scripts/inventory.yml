@@ -1,19 +1,17 @@
 ---
 # Ansible inventory
-# Run Ansible FROM bastion2 (primary) — it reaches all targets on the LAN.
 #
-# Connection notes:
-#   bastion2    — ansible_connection: local (Ansible runs ON this machine)
-#   bastion0    — LAN 192.168.2.100, root access
-#   blue-anydesk — LAN 192.168.3.91, user ej with passwordless sudo
-#   green-anydesk — currently down, uncomment when back online
+# Groups:
+#   bastions     — bastion2, bastion0 (key auth, user ej)
+#   anydesk      — blue-anydesk (password auth, ProxyJump)
+#   core-servers — util, green, blue (password auth, ProxyJump)
 #
-# Requires sshpass on bastion2 for anydesk password auth:
-#   apt install sshpass   (already confirmed installed)
+# Runtime variables:
+#   anydesk_ssh_password   — ej password on anydesk servers
+#   core_server_password   — ej password on core-servers
 #
-# Pass anydesk password at runtime — never store in this file:
 #   ansible-playbook sync-os-users.yml -i inventory.yml \
-#     --extra-vars "anydesk_ssh_password=<password>"
+#     --extra-vars "anydesk_ssh_password=<pw> core_server_password=<pw>"
 
 bastions:
   hosts:
@@ -45,3 +43,22 @@ anydesk:
     #   ansible_become: true
     #   ansible_become_method: sudo
     #   ansible_password: "{{ anydesk_ssh_password }}"
+    #   ansible_ssh_common_args: '-o ProxyJump=ssh.auto-deploy.net -o StrictHostKeyChecking=no'
+
+core-servers:
+  # util, green, blue — internal LAN servers
+  # ej is current service account (transitioning to app-service)
+  # Password: core_server_password (passed at runtime)
+  vars:
+    ansible_user: ej
+    ansible_become: true
+    ansible_become_method: sudo
+    ansible_password: "{{ core_server_password }}"
+    ansible_ssh_common_args: '-o ProxyJump=ssh.auto-deploy.net -o StrictHostKeyChecking=no -o PreferredAuthentications=password'
+  hosts:
+    util:
+      ansible_host: 192.168.2.97
+    green:
+      ansible_host: 192.168.2.120
+    blue:
+      ansible_host: 192.168.3.120

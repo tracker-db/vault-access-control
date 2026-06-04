@@ -40,6 +40,10 @@ resource "local_file" "ansible_users" {
       for username, sa in local.linux_service_accounts :
       username => { status = sa.status }
     }
+    core_service_accounts = {
+      for username, sa in local.core_server_service_accounts :
+      username => { status = sa.status }
+    }
   })
 }
 

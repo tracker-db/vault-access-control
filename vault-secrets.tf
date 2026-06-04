@@ -94,7 +94,7 @@ resource "vault_kv_secret_v2" "anydesk_server_2" {
 variable "app_service_username" {
   description = "OS username for the shared service account on internal systems"
   type        = string
-  default     = "ej"
+  default     = "app-service"
 }
 
 variable "app_service_ssh_private_key" {
@@ -119,12 +119,11 @@ resource "vault_kv_secret_v2" "app_service" {
     username        = var.app_service_username
     password        = var.app_service_password
     ssh_private_key = var.app_service_ssh_private_key
-    notes           = "Shared service account for utility server, libvirt hosts, containers"
+    notes           = "Shared service account for core-servers (util, green, blue)"
     targets = [
-      "utility server",
-      "libvirt-host-1",
-      "libvirt-host-2",
-      "all containers",
+      "util   — 192.168.2.97",
+      "green  — 192.168.2.120",
+      "blue   — 192.168.3.120",
     ]
   })
 }
