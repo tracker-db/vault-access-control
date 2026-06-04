@@ -1,13 +1,17 @@
 # vault-secrets.tf
 # ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-# Terraform manages the KV mount structure only.
+# Terraform manages the KV mount and service account credential paths.
 #
-# Secret VALUES are set directly in Vault — never in this repo.
-# No variables, no tfvars, no secrets on disk.
+# No secrets are stored in files — passwords are passed via
+# environment variable and land only in Vault:
 #
-# To read or update a secret:
-#   vault kv get  secret/shared/app-service/credentials
-#   vault kv put  secret/shared/anydesk/server-1 password=xxx
+#   TF_VAR_service_account_password=88888888 terraform apply
+#
+# To read a service account credential:
+#   vault kv get secret/service-accounts/<name>/credentials
+#
+# To rotate all passwords:
+#   TF_VAR_service_account_password=<new> terraform apply
 # ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
 resource "vault_mount" "kv" {
@@ -23,4 +27,43 @@ resource "vault_mount" "kv" {
   lifecycle {
     prevent_destroy = true
   }
+}
+
+# ──────────────────────────────────────────────
+# Service Account Credentials
+#
+# All OS service accounts — bastions and core-servers.
+# Password passed via TF_VAR env var, never stored in any file.
+# ──────────────────────────────────────────────
+
+variable "service_account_password" {
+  description = "Password for all OS service accounts. Pass via: TF_VAR_service_account_password=<value>"
+  type        = string
+  sensitive   = true
+}
+
+locals {
+  service_accounts_with_creds = [
+    # bastions
+    "ansible-job-user",
+    "ansible-work",
+    "ansible-work-service-account",
+    "auto-deploy",
+    # core-servers (util)
+    "mysql",
+    # core-servers (green, blue)
+    "libvirt-qemu",
+  ]
+}
+
+resource "vault_kv_secret_v2" "service_accounts" {
+  for_each = toset(local.service_accounts_with_creds)
+
+  mount = vault_mount.kv.path
+  name  = "service-accounts/${each.key}/credentials"
+
+  data_json = jsonencode({
+    username = each.key
+    password = var.service_account_password
+  })
 }
