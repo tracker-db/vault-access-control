@@ -1,0 +1,42 @@
+name: Apply Vault Access Control
+
+# ─────────────────────────────────────────────────────────────────────────────
+# Applies vault-access-control Terraform on every push to main.
+#
+# Why it runs on blue-anydesk instead of the runner directly:
+#   Terraform state lives at /opt/terraform/state/user-access.tfstate on
+#   blue-anydesk (local backend — no cloud state bucket needed in this env).
+#   The runner SSHes to blue-anydesk and runs apply there, where state is.
+#
+# Bootstrap: run scripts/bootstrap.sh once first — it sets up the runners,
+#   creates the AppRole credentials, and authorizes the runner_key on blue-anydesk.
+# ─────────────────────────────────────────────────────────────────────────────
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch: {}
+
+jobs:
+
+  apply:
+    name: Terraform Apply
+    runs-on: self-hosted
+
+    steps:
+      - name: Pull and apply on blue-anydesk
+        run: |
+          ssh -o StrictHostKeyChecking=no ej@192.168.3.91 "
+            set -euo pipefail
+            cd /home/ej/vault-access-control
+            git pull --ff-only
+            terraform init -input=false -upgrade
+            terraform apply -input=false -auto-approve
+          "
+
+      - name: Report
+        if: always()
+        run: |
+          echo "vault-access-control apply complete."
+          echo "Push: ${{ github.sha }}"
+          echo "Triggered by: ${{ github.actor }}"

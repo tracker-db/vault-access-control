@@ -23,11 +23,15 @@ locals {
     }
 
     # ── CI/CD Pipeline ───────────────────────
+    # Runs on util (192.168.2.97) as Docker containers via next-runner.
+    # Authenticates via AppRole (VAULT_ROLE_ID + VAULT_SECRET_ID in .env).
+    # Token TTL covers one job execution; container restarts refresh it.
     "github-actions-runner" = {
-      roles         = ["deployer"]
-      description   = "GitHub Actions self-hosted runner on build server"
-      token_ttl     = 1800
-      token_max_ttl = 3600
+      roles          = ["deployer"]
+      extra_policies = ["pipeline-reader"]
+      description    = "GitHub Actions self-hosted runner on util (192.168.2.97) — serves tracker-db org"
+      token_ttl      = 7200
+      token_max_ttl  = 7200
     }
 
     # ── Vault Agent on K8s ───────────────────

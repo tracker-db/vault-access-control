@@ -256,6 +256,7 @@ locals {
       [for role_name in sa.roles :
         try(local.roles[role_name].aws_access, false) ? "aws-access" : ""
       ],
+      try(sa.extra_policies, []),
     )))
   }
 }
