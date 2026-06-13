@@ -1,0 +1,24 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(terraform:*)",
+      "Bash(ansible:*)",
+      "Bash(ansible-playbook:*)",
+      "Bash(git:*)",
+      "Bash(ssh:*)",
+      "Bash(vault:*)",
+      "Bash(curl:*)",
+      "Bash(ls:*)",
+      "Bash(cat:*)",
+      "Bash(grep:*)",
+      "Bash(find:*)"
+    ],
+    "deny": [
+      "Bash(terraform destroy:*)",
+      "Bash(rm -rf:*)",
+      "Bash(git push --force:*)",
+      "Bash(vault secrets disable:*)",
+      "Bash(vault auth disable:*)"
+    ]
+  }
+}
