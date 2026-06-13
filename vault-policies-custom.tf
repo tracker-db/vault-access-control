@@ -298,6 +298,21 @@ resource "vault_policy" "ssh_key_policy" {
   EOT
 }
 
+# Pipeline CI — read-only access to pipeline secrets in tracker-db KV.
+# Used by the self-hosted runner on util when running Terraform for the pipeline.
+resource "vault_policy" "pipeline_reader" {
+  name = "pipeline-reader"
+
+  policy = <<-EOT
+    path "tracker-db/data/module-baremetal-host" {
+      capabilities = ["read"]
+    }
+    path "auth/token/lookup-self" {
+      capabilities = ["read"]
+    }
+  EOT
+}
+
 # Ticket / tracker-db full access.
 resource "vault_policy" "ticket_policy" {
   name = "ticket-policy"
