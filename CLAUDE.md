@@ -52,7 +52,7 @@ ansible-playbook scripts/sync-os-users.yml -i scripts/inventory.yml \
 | fawaz | Platform admin |
 
 ## Family Repos
-- `module-baremetal-host` (position 1) — bare metal hosts; `/home/ej/bare-metal-template`
+- `module-baremetal-host` (position 1) — bare metal hosts; `/home/ej/module-baremetal-host`
 - `next-base-libvirt` (position 2) — VMs; `/home/ej/next-base-libvirt`
 - `next-base-kubernetes` (position 3) — Kubernetes; `/home/ej/next-base-kubernetes`
 - `smart-plug-maas` — HP power control API; `/home/ej/smart-plug-maas`
