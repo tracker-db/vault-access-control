@@ -79,11 +79,11 @@ be reflected here before they can be applied.
 
 | Repository | Remote | Why Related |
 |------------|--------|-------------|
-| `module-baremetal-host` | https://github.com/ejbest/module-baremetal-host | Pipeline position 1 — its Terraform reads MAAS API key, SSH key, and admin password from Vault; its runner identity is defined here |
+| `next-base-baremetal` | https://github.com/tracker-db/next-base-baremetal | Pipeline position 1 — its Terraform reads MAAS API key, SSH key, and admin password from Vault; its runner identity is defined here |
 | `next-base-libvirt` | https://github.com/tracker-db/next-base-libvirt | Pipeline position 2 — same credential dependency on Vault; SSH inventory here governs its bastion access |
 | `next-base-kubernetes` | https://github.com/tracker-db/next-base-kubernetes | Pipeline position 3 — Vault credentials and SSH inventory govern cluster node access |
 | `next-runner` | https://github.com/tracker-db/next-runner | The self-hosted runner containers that execute all pipeline workflows; AppRole credentials for the runners are created and owned here |
 | `smart-plug-maas` | https://github.com/tracker-db/smart-plug-maas | Runs on util (192.168.2.97) — the service account for util is managed here; smart-plug-maas must run before bare metal provisioning |
 
 ## Pipeline Map
-See `module-baremetal-host/PIPELINE.md` for the full pipeline architecture.
+See `next-base-baremetal/PIPELINE.md` for the full pipeline architecture.

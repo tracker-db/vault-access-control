@@ -304,7 +304,7 @@ resource "vault_policy" "pipeline_reader" {
   name = "pipeline-reader"
 
   policy = <<-EOT
-    path "tracker-db/data/module-baremetal-host" {
+    path "tracker-db/data/next-base-baremetal" {
       capabilities = ["read"]
     }
     path "auth/token/lookup-self" {

@@ -52,11 +52,11 @@ ansible-playbook scripts/sync-os-users.yml -i scripts/inventory.yml \
 | fawaz | Platform admin |
 
 ## Family Repos
-- `module-baremetal-host` (position 1) — bare metal hosts; `/home/ej/module-baremetal-host`
+- `next-base-baremetal` (position 1) — bare metal hosts; `/home/ej/next-base-baremetal`
 - `next-base-libvirt` (position 2) — VMs; `/home/ej/next-base-libvirt`
 - `next-base-kubernetes` (position 3) — Kubernetes; `/home/ej/next-base-kubernetes`
 - `smart-plug-maas` — HP power control API; `/home/ej/smart-plug-maas`
 
 ## Full Architecture
-See `module-baremetal-host/PIPELINE.md`.
+See `next-base-baremetal/PIPELINE.md`.
 See CHARTER.md in this repo for the complete server and account reference.
